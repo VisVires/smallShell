@@ -3,9 +3,9 @@ CC = g++
 # compiler flags
 #-g debugging info
 #-Wall for compiler warnings
-CFLAGS = -g -Wall -std=c++11
+CFLAGS = -g -Wall -std=c++14
 #Target executable
-TARGET = arraysds
+TARGET = 2darr
 
 all: $(TARGET)
 $(TARGET): $(TARGET).cpp
