@@ -26,7 +26,7 @@ using namespace std;
 int getHourGlassSum(int x, int y, vector<vector<int>> &arr);
 
 int main(){
-	int newSum;
+    int newSum;
 	int highSum = 0;
 	ifstream myfile;
 	myfile.open("array.txt");

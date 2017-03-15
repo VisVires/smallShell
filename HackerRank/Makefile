@@ -5,7 +5,7 @@ CC = g++
 #-Wall for compiler warnings
 CFLAGS = -g -Wall -std=c++14
 #Target executable
-TARGET = 2darr
+TARGET = lshift
 
 all: $(TARGET)
 $(TARGET): $(TARGET).cpp
