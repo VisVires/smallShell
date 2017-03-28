@@ -10,15 +10,12 @@ class Solution {
         //get numbers from file
         using (var streamReader = new StreamReader(fileStream))
         {
-                int arr_i = 0;
-                while((streamReader.ReadLine()) != null && arr_i < 6){
+                for(int arr_i = 0; arr_i < 6; arr_i++){
                        string[] arr_temp = streamReader.ReadLine().Split(' ');
-                       arr_i++;
                        arr[arr_i] = Array.ConvertAll(arr_temp, Int32.Parse);
                 }
          }
-           //string[] arr_temp = Console.ReadLine().Split(' ');
-           //arr[arr_i] = Array.ConvertAll(arr_temp,Int32.Parse);
+        printArr(arr);
     }
 
     static void printArr(int[][] arr){
@@ -26,6 +23,7 @@ class Solution {
             for(int j = 0; j < 6; j++){
                 Console.Write(arr[i][j].ToString() + " ");
             }
+            Console.WriteLine();
         }
         
     }
