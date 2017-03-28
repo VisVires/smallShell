@@ -1,3 +1,3 @@
 #!/bin/bash
-FILE="arrayds"
+FILE="2darr"
 mcs -out:$FILE.exe $FILE.cs
