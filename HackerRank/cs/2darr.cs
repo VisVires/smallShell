@@ -15,7 +15,8 @@ class Solution {
                        arr[arr_i] = Array.ConvertAll(arr_temp, Int32.Parse);
                 }
          }
-        printArr(arr);
+        int maxSum = getMaxSumOfHourGlasses(arr);
+        Console.Write(maxSum + "\n"); 
     }
 
     static void printArr(int[][] arr){
@@ -24,8 +25,34 @@ class Solution {
                 Console.Write(arr[i][j].ToString() + " ");
             }
             Console.WriteLine();
+        }    
+    }
+
+    static int getMaxSumOfHourGlasses(int[][] arr){
+        int maxSum = -10000;
+        int currSum;
+        for (int row = 1; row < 5; row++){
+            for(int col = 1; col < 5; col++){
+                currSum = getSumOfHourGlass(arr, row, col);
+                if (currSum >= maxSum){
+                    maxSum = currSum;
+                }
+            }
         }
-        
+        return maxSum;
+    }
+    
+    static int getSumOfHourGlass(int[][] arr, int row, int col){
+        int leftUpper, middleUpper, rightUpper, center, leftLower, middleLower, rightLower, sum;
+        leftUpper = arr[row-1][col-1];
+        middleUpper = arr[row-1][col];
+        rightUpper = arr[row-1][col+1];   
+        center = arr[row][col];
+        leftLower = arr[row+1][col-1];
+        middleLower = arr[row+1][col];
+        rightLower = arr[row+1][col+1];
+        sum = leftUpper + middleUpper + rightUpper + center + leftLower + middleLower + rightLower;
+        return sum;
     }
 }
 
