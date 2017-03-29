@@ -1,3 +1,3 @@
 #!/bin/bash
-FILE="2darr"
+FILE="maxStack"
 mcs -out:$FILE.exe $FILE.cs
