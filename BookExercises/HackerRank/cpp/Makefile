@@ -5,7 +5,7 @@ CC = g++
 #-Wall for compiler warnings
 CFLAGS = -g -Wall -std=c++14
 #Target executable
-TARGET = triplets
+TARGET = hacker
 
 all: $(TARGET)
 $(TARGET): $(TARGET).cpp
