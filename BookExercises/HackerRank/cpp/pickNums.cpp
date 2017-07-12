@@ -17,7 +17,7 @@ int main() {
     myfile >> sizeOfArray;
     while(myfile >> input){
         num[input]++;
-        cout << input << " " <<num[input] << endl;
+        //cout << input << " " <<num[input] << endl;
     }
 
     for(auto i = 0u; i < num.size(); ++i){
