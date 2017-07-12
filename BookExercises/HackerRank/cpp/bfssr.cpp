@@ -7,91 +7,61 @@
 #include <queue>
 using namespace std;
 
-void printMatrix(vector<vector<int>> matrix){
-    for(auto i = 0u; i < matrix.size(); i++){
-        for(auto j = 0u; j < matrix[i].size(); j++){
-            cout << matrix[i][j] << " ";
-        }
-        cout << endl;
-    }
-}
+int main(){
 
-void runBFS(vector<vector <int>> matrix, unsigned int start, unsigned int n, unsigned int m, int q){
-    vector<bool> visited(n+1, false);
-    vector<int> distances(n, 0);
-    queue<int> mq;
-    int pos = start;
-    int loops = 1;
-
-    visited[pos] = true;
-    mq.push(pos);
-
-    while(!mq.empty()){
-        pos = mq.front();
-        mq.pop();
-        //returning very large size for invalid numbers
-        //cout << pos << " " << matrix[pos].size();
-        //if(q == 0)
-        //    return;
-
-        for(auto i = 0u; i < matrix[pos].size(); ++i){
-            int val = matrix[pos][i];
-            if(visited[val] == false){
-                visited[val] = true;
-                distances[val] = loops * 6;                    
-                mq.push(val);
-            }
-        }
-        loops++;
-    }
-
-    for(auto i = 1u; i < visited.size(); i++){
-        if(i != start){
-            if(visited[i] == false){
-                cout << -1 << " ";
-            } else {
-                cout << distances[i] << " ";
-            }
-        }
-    }
-    cout << endl;
-
-}
-
-
-int main() {
     ifstream myfile;
     myfile.open("array.txt");
-    
-    //get query number
-    int q; 
+    long int q, n, m, u, v, i, j;
     myfile >> q;
-    int query = 0;
-    
-    //run queries
-    while(query < q){ 
-        unsigned int n, m, u, v, s;
-        //get points and edges
+    while(q--)
+    { 
         myfile >> n >> m;
-        //create matrix
-        vector<vector<int>> matrix(n + 1);
-       //post to matrix
-        for(auto i = 0u; i < m; ++i) {
+        vector <long int> vec[n+1];
+        while(m--)
+        { 
             myfile >> u >> v;
-            //push u value to v to make adjacency list
-            matrix[u].push_back(v);
-            matrix[v].push_back(u);
-        }
-       
-        //printMatrix(matrix);
 
-        //vector to hold distances
-        //get starting value
-        myfile >> s;
-        //run bfs        
-        runBFS(matrix, s, n, m, query);
-        //increment queries
-        query++;
+            vec[u].push_back(v);
+            vec[v].push_back(u);
+        }
+        bool visited[n+1]={false};
+        long int dist[n+1]={0};
+        long int start;
+        
+        myfile >> start;
+         
+        deque <long int> q;
+        q.push_front(start);
+        visited[start] = true;
+        dist[start] = 0;
+        int loop = 1;
+        
+        //run BFS    
+        while(!q.empty())
+        {   
+            long int p = q.front();
+            q.pop_front();
+            for(i = 0; i < vec[p].size(); i++){
+                int val = vec[p][i];
+                if(visited[val] == false){  
+                    visited[val] = true;
+                    q.push_front(val);
+                    if(dist[val] == 0)
+                        dist[val] = loop * 6;
+                }
+            }
+            loop++;
+        }
+        for( j=1; j<=n; j++){ 
+            if(j!=start)
+            { 
+                if(dist[j]==0)
+                    cout << "-1" << " ";
+                else
+                    cout << dist[j] << " ";
+            }
+        }
+                cout<<endl;
     }
     return 0;
 }
