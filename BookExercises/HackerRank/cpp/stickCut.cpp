@@ -36,6 +36,7 @@ int main() {
         cout << sticks.size() << endl;
 		int num = sticks.front();
         list<int>::iterator it;
+        //could count lenght of total difference then move on to speed up time only iterating through once
 		for(it = sticks.begin(); it != sticks.end() ; ++it){
 			if(*it - num <= 0){
 				sticks.remove(*it);
