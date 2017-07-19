@@ -1,6 +1,4 @@
-5
-AAAA
-BBBBB
-ABABABAB
-BABABA
-AAABBB
+3
+abcdde
+baccd
+eeabg
