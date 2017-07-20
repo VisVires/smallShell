@@ -1,4 +1,5 @@
-3
-abcdde
-baccd
-eeabg
+4
+abc
+abcba
+abcd
+cba
