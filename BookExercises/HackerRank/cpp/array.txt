@@ -1,5 +1,1 @@
-4
-abc
-abcba
-abcd
-cba
+cdefghmnopqrstuvw
