@@ -1,1 +1,7 @@
-cdefghmnopqrstuvw
+6
+aaabbb
+ab
+abc
+mnop
+xyyx
+xaxbbbxx
