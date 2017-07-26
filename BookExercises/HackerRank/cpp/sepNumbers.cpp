@@ -29,6 +29,8 @@ int main() {
            cout << no << endl;
            
         } else {
+            //check for 0,0 then 0,1 then 0,2 then 0,n/2 and save all in vector
+            //check against strings of equal length throughout the number
             int numLength = input.length();
             int count = 0;
             for(auto i = 0u; i < (input.length()/2)+1; i++){
