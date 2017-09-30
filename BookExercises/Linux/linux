@@ -1,0 +1,82 @@
+NETWORKING NOMAD LINUX PART 3
+
+
+NETWORK SHARING
+File Sharing Overview
+    --When working within a network, the way to transfer data is network file sharing
+    --file sharing tool
+        --scp command
+            -secure copy, works like cp but allows you to transfer between hosts on the same network. Works via ssh
+            --examples:
+            -copy a file from local host to remote host:
+            scp myfile.txt username@remotehost.com:/remote/directory
+            -copy a file from a remote host to your local host
+            scp username@remotehost.com:/remote/directory/myfile.txt /local/directory
+            -copy directory from local host to remote host
+            scp -r mydir username@remotehost.com:/remote/directory
+rsync
+    --Another tool to copy data from different hosts
+    --short for remote synchronization
+    --different from scp in that it uses a special algorithm to see data you're copying to and will only copy differences
+    --verifies file with checksums
+    --ideal for directory synch remotely and locally, data backups and large data transfers
+    FLAGS
+        -- v -verbose
+        -- r -recursive
+        -- h -human readable output
+        -- z - compressed for easier transfer, great for slow connections
+    -copy/sync files on same host
+    rsync -zvr /my/local/directory/one /my/local/directory/two
+    -copy/sync files to local host from a remote host
+    rsync /local/directory username@remotehost.com:/remote/directory
+    -copy/sync files to a remote host from a local host
+    rsync username@remotehost.com:/remote/directory /local/directory
+Simple HTTP Server
+    --Python quick network share that other machines on the network can access
+    -- sets up a basic webserver that you can access via the localhost address
+    -- grab the IP address of the machine you ran it on and then on another machine access it it in the browser with: http:://IP_ADDRESS:8000.
+    --You can view files by typing http://localhost:8000 in the web browser
+    --You can also do this with node
+NFS
+    Standard network file share for linux
+    NFS
+        -allows a server to share directories and files with one or more clients over a network
+        -setting up NFS client
+            sudo service nfsclient start
+            sudo mount server:/directory/mount_directory
+        -Automounting
+            -setup automounting to keep the server permanently mounted
+            -automount tool or amd
+            - when a file is accessed in the specified directory automount will look up the remote server and automatically mount it
+Samba
+    -SMB
+        -Secure Message Block Protocol originally for Windows to Linux but was optimized to form the Common Internet File System (CIFS) protocol
+    -Samba
+        --The linux utilities to work with CIFS on Linux
+        --To Install:
+            --Install
+            sudo apt update
+            sudo apt install samba
+            --Setup smb.conf
+            sudo vim /etc/samba.smb.conf
+            --Setup password
+            sudo smbpasswd -a [username]
+            --Create a shared directory
+            mkdir /my/directory/to/share
+            --Restart the Samba Service
+            sudo service smbd restart
+            --Access via windows
+            smbclient //HOST/directory -U user
+            --instead of transferring one by one you can just mount the network share on your system
+            sudo mount -t cifs servername:directory mountpount -o user=username,pass=password
+
+
+NETWORK BASICS
+Network Basics
+    -Components
+        -ISP
+        -Router
+        -WAN
+        -WLAN
+        -LAN
+        -Hosts
