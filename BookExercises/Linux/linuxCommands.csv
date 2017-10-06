@@ -1,0 +1,96 @@
+pwd,print current directory
+cd [directory location],change directory
+ls,list directories
+ls -la,list directories long format
+touch [filename],create new file
+file [filename],output file type
+cat,concatenate files or output file contents to standard output
+less,make output more manageable
+history,show all previous commands
+!!,repeat previous command
+!-[x],repeat command x commands back
+cp [filename] [destination],copy file from location to directory 
+cp -r [filename] [destination],copy directory from location to directory
+cp -i [filename] [destination],copy file from location to directory with interactive
+mv [filename] [destination],move file from local to destination
+mv [filename] [newfilename], change file name
+mv -i [filename] [destination], interactive file move or rename
+mv -b [filename] [destination], create backup with move that starts with ~
+mkdir [dirname],make directory
+mkdir [dir1] [dir2],make multiple directories
+mkdir -p [dir/path/and/subs],make directory and subdirectories
+rm [file], remove file
+rm -rf [directory], force remove directory
+rm -f [file], force remove file
+rm -i [file], interactive remove file
+rmdir [dirname], remove directory
+find [directory] -name [filename], find file in directory with name
+help [command],get help with command
+[command] --help,get help with command alternative
+man [command],man pages for command
+whatis [command],brief description of command
+alias [aliasname]=[command], give common command an alias name
+unalias [aliasname], unalias aliased command
+exit,leave terminal
+logout,logout user
+echo [phrase], output item to sdout
+echo > [filename], output item and replace current text in filename
+echo >> [filename], append to text currently at filename
+<,redirect to stdin
+2>, write to stderr
+2>&1,write to stderr and stdout
+&>,write to stdout
+[command] | [outfile], redirect output of one command as input to another
+[command] | tee [outfile], redirect output of one command as input to another along with other outputs like to stdout
+env, output enviromental variables
+cut -c 5 [filename], output 5th character in each line
+cut -f 2 [filename], output 2nd field (field denoted by -f and default delimiter is tab)
+cut -f 1 -d "[delimiter]" [filename], output field with new delimiter
+cut -c 5-10 [filename], output range of characters from 5 to 10
+cut -c -5 [filename], get first 5 characters from file
+paste -s [filename], paste file.. works like cat..default delimiter is tab
+paste -s -d "[delimiter]" [filename], paste file change delimiter
+head [filename], shows first 10 lines of a file
+head -n [number] [filename], shows first number lines of a file
+tail [filename], shows last 10 lines of a file
+tail -n [number], shows last number lines of a file
+expand [filename], change tabs to spaces
+unexpand [filename], changes spaces to tabs
+join [filename1] [filename2], join files by common fields
+join -1 2 -2 1 [file1] [file2], join file -1 and file -2 at fields 2 and 1 respectively
+split [filename], split file into separate files
+sort [filename], sort lines in file
+sort -r [filename], sort lines in file in reverse
+sort -n [filename], sort lines in file by numerical order
+tr [a-z] [A-Z], translate items in file from lower case to upper case
+uniq [filename], outputs unique lines only
+uniq -c [filename], count occurances of each line
+uniq -u [filename], just get unique values
+uniq  -d [filename], get duplicates only (you must sort first as they need to be adjacent)
+wc [filename], show count of lines words and bytes
+wc -l [filename], show count of lines
+wc -w [filename], show count of words
+wc -c [filename], show count of bytes
+nl [filename], output numbered lines on a file
+grep [characters] [filename], search files for characters that follow certain patterns
+grep -i [characters] [filename], search files for characters that follow certain case insentitve patterns, also use regex
+grep -E, unknown
+grep -F, unknown
+Vim, improved vi
+sudo, run command with root access
+su, substitute users and open a root shell to run everything as root
+visudo, opens /etc/sudoers file which lists who can run sudo
+root, most powerful user on the system
+adduser, makes a home directory for a new user (1 of 2)
+useradd, makes a home directory for a new user (2 of 2)
+sudo adduser [user], makes an entry in /etc/passw for user and sets of a default group and entry in /etc/shadow
+sudo userdel [user], removes user from /etc/passw and entry in /etc/shadow
+passwd [user], change your or another users password
+chmod ug+w [filename], add write privliges to user and group
+chmod 755 [filename], give user full access .. group and others read and execute permissions
+chmod go-w [filename], remove write permissions from group and others
+sudo chown [username] [filename], change user for file
+sudo chgrp [groupname] [filename], change group for file
+sudo chown [username]:[groupname] [filename], change user and group for a file
+umask 022 [filename], remove write permissions from group and others
+
