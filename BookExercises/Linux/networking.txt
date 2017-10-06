@@ -1,5 +1,5 @@
 How to send a request to google.com
-1. Client Application Layer - Access HTTP call - creates message
+1. Client Application Layer - Access HTTP call - creates MESSAGE
     a. defines type of message (response, request), syntax (fields), semantics, rules for processes to send recieve
     b. Application process uses a socket to send/receive messages to/from another application process
     c. REQUEST message includes
@@ -18,7 +18,7 @@ How to send a request to google.com
         ii. Client queries .com DNS server to get amazon.com DNS
         iii. Client queries amazon.com DNS server to get IP address for amazon.com
         iv. DNS is UDP
-2. Client Transport Layer - Access Port 80 - creates segment
+2. Client Transport Layer - Access Port 80 - Creates SEGMENT from MESSAGE
     a. Process communication layer
     b. Handshake over HTTP 
         i . client initiates TCP connection to server using socket on port 80 by sending SYN and chooses initial sequence number x SYN bit = 1 Seq# = x
@@ -77,7 +77,7 @@ How to send a request to google.com
         iv. Server sends FIN bit = 1 Seq# = y and can no longer send data
         v. Client sends ACK bit = 1 ACK#= y+1
         vi. Server is closed
-3. Client Network Layer - Get IP info - creates datagram 20 bytes TCP/UDP and 20 bytes IP Overhead per datagram
+3. Client Network Layer - Create DATAGRAM from SEGMENT - creates datagram 20 bytes TCP/UDP and 20 bytes IP Overhead per datagram
     a. Logical communication from host to host
     b. Routing and Forwarding happens here
         i. Routing algorithm determines the path through the network 
@@ -140,7 +140,60 @@ How to send a request to google.com
     j. Network Address Translation (NAT)
         i. In-line configuration...all entering or leaving info goes through the NAT device, internal doesn't use NAT
         ii. NAT device uses port number as well as IP, so Transport layer functionality needed
-4. Client Link Layer - create frame
+4. Client Link Layer - create FRAME from DATAGRAM
+    a. Logical communication between adjacent nodes(hosts and routers/switches)
+        i. Each host has network adaptor (NIC network interface controller)
+            1. interface to physical layer
+            2. has some network/transport layer functions like checksum processing and direct memory access
+        ii. Sender...
+            1. encapsulates datagram in hardware frame between delimiters
+            2. adds address info, error, checking bits, reliable data transfer, flow control
+        iii. Types of links
+            1. point to point
+                a. between host and swtich
+            2. broadcast
+                a. Mulitple Access Protocol - three classes
+                    i. Channel partitioning (divide channel into smaller pieces (TDM && FDM)
+                    ii. Random Access (allow collisions and recover)
+                        1. when collision do delayed retransmission
+                        2. Carrier Sense Multiple Access (CSMA)
+                            a. Carrier Sense Multiple Access with Collision Detection (CSMA/CD) - Wired LAN (CD difficult in wireless)
+                            b. Carrier Sense Multiple Access with Collision Avoidance (CSMA/CA) - wireless
+                                i. reservation messages sent to receiver
+        
+                    iii. Taking Turns 
+                        1. master node invites slaves nodes to transmit in turn (used for dumb terminals)
+    b. Provides hardware addresses to identify source and destination
+        i. Media Access Control (MAC) address 48 bit unique to manufacturer and NIC, portable
+            1. A encapsulates B's MAC in frame
+            2. A sends frame into the medium
+            3. All nodes' NIC check frame to check if its for them
+            4. Only B accepts frame
+        ii. ARP (Address Resolution Protocol)
+            1. Each node has ARP table and A looks up in B's MAC in ARP if A knows B's IP
+            2. If in separate LAN then routes to Router and router will know it
+    c. Has Access to shared medium
+        i. Ethernet frames include
+            1. preamble - synch receiver/sender clock rates 8-bytes
+            2. destination address - 6 bytes for each MAC
+            3. source address - 6 bytes
+            4. type - network layer protocol (normally IP)
+            5. payload - network layer datagram
+            6. CRC - cyclic redundancy check at receiver (error checking)
+        ii. Classified by topology
+            1. bus (CSMA/CD)
+            2. ring 
+            3. star - most common (CSMA/CD) - active switch in center
+    d. detect/avoid/resolve collisions at Adjacent nodes
+        i. exponential backoff with CSMA/CD waits k*512 bit times
+        ii. CSMA/CD - NIC only sends if channel idle then sends entire frame if collision then backoff
+        iii. CSMA/CA - sender sends request to sent (RTS) AP send clear to send (CTS) which is received by all nodes
+            1. if collision all requests lost then random backoff and retry
+    e. Detect/correct bit level errors
+        i. Done with 1-dimensional/ 2-dimensional even parity check
+        ii. Checksum
+        iii. Cyclic redundancy check (CRC)
+        iv. Hamming codes
 5. Client Physical Layer- Carries message to router
 6. Router Physical Layer
 7. Router Link Layer
@@ -150,15 +203,20 @@ How to send a request to google.com
 11. Router Physical layer
 12. Switch Physcial Layer
 13. Switch Link Layer
-14. Switcg Physical Layer
+14. Switch Physical Layer
 15. Server Physical Layer
-16. Server Link Layer - Receive frame and check data integrity
-    a. Re-assembles fragments (ONLY OCCURS AT FINAL DESTINATION)
+16. Server Link Layer - Receive FRAME and check data integrity -dencapsulate to make DATAGRAM
+    a. checks address
+        i. accepts if a match and handles errors, data transfer, flow control
+        ii. otherwise reject
+    b. Interprets and discards soh (start of header) (start delimiter)
+    c. Re-assembles fragments (ONLY OCCURS AT FINAL DESTINATION)
         i. can arrive out of order and get sorted
-        ii. fragment loss can happen 
+        ii. fragment loss can happen
         ii. destination sets timer with first fragment if it expires destination drops datagram
-17. Server Network Layer - Checks IP against own IP and makes sure destination is correct- de-encapsulates datagram to make segment and send to transport layer
-18. Server Transport Layer - Checks the UDP or TCP port number and makes connection to port based on that - deencapsulates segment and send to application layer
+    d. interprets/discards eot (end of text) (end delimiter)
+17. Server Network Layer - Checks IP against own IP and makes sure destination is correct- de-encapsulates DATAGRAM to make SEGMENT
+18. Server Transport Layer - Checks the UDP or TCP port number and makes connection to port based on that - deencapsulates SEGMENT and sends MESSAGE to application layer
     a. Port is always listening and HTTP is stateless
     b. RECIEVER Protocol
         i. accepts segments from network layer
@@ -187,7 +245,7 @@ How to send a request to google.com
             5. Receives and discards duplicates if ACK is delayed or lost
     d. With TCP server will create new socket to communicate with client using source port #'s
 
-19. Receives HTTP message at application layer
+19. Server application layer - recieves HTTP MESSAGE
     a. RESPONSE method includes
         i. Status line
             1. protocol e.g. HTTP
