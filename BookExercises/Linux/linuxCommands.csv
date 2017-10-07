@@ -93,4 +93,122 @@ sudo chown [username] [filename], change user for file
 sudo chgrp [groupname] [filename], change group for file
 sudo chown [username]:[groupname] [filename], change user and group for a file
 umask 022 [filename], remove write permissions from group and others
+sudo chmod u+s [filename], allows user who launched program to get owners permissions and execution permissions
+sudo chmod 4755 [filename], numberical means of setuid so user who launched gets owner permissionsudo chmod g+s [filename], allows group who launched to get owners permissions and execution permission
+sudo chmod 2555 [filename], numberical means of setguid if "S" it doesn't have execute permissionsudo chmod +t [dir/filename], sticky bit symbolic only owner can delete or modify file
+sudo chmod 1755 [dir/filename], numberical sticky bit only owner can delete or modify file
+ps, output snapshot of current processes
+ps a , list all processes with a terminal (tty)
+ps ax , list all processes 
+ps aux , list all processes under current user
+SIGHUP, Hang up signal
+SIGKILL, Kill signal
+SIGINT, Interrupt signal
+SIGSEGV, segmentation fault signal
+SIGTERM, Software termination signal
+SIGSTOP, Stop signal
+kill [PID] , calls sigterm to kill a process
+kill -9 [PID], cal sigkill on a process
+top, show top processes running in real time
+nice -n 5 apt upgrade, use nice to change/set niceness/priority of a new process
+renice 10 -p [PID], set niceness/priority of an existing process
+STAT R, Running STATUS
+STAT S, Interupptable sleep STATUS
+STAT D, Uninteruptable sleep STATUS
+STAT Z, Zombie STATUS
+STAT T, Process is suspended or stopped STATUS
+jobs, shows all jobs sent to background with job id and a + by the most recent and - by second
+bg, send process to background after ctrl-z for SIGSTOP
+fg %[JobID], bring background job forward or most recent
+kill %[JobID], kill process with job id
+gzip [filename], compress file with gzip
+gunzip [filename].gz, decompress gzip file
+tar cvf [filename].tar [file1] [file2] adds multiple files to an archive (gzip can't do this) c - create v- verbose f-filename
+tar czf [filename].tar.gz, create compressed tar file with z flag for gzip
+tar xzf [filename].tar, uncompress and unpack or extract all files
+rpm -i [packagename].rpm, install redhat package
+rpm -e [packagename].rpm, remove redhat package
+rpm -qa, query all or list redhat packages 
+dpkg -i [packagename].deb, install debian package
+dpkg --install [packagename].deb, install debian package
+dpkg -r [packaagename].deb, remove debian package
+dpkg -l, list debian packages
+yum install [packagename], install redhat command
+yum erase [packagename], erase redhat command
+yum update, redhat update
+yum info [packagename], get info about package redhat command
+apt install [packagename], install debian package command
+apt remove [packagename], remove debian package command
+apt update or apt upgrade, update or upgrade debian package command
+apt show [packagename], get info about package debian command
+sudo apt install build-essentials, get build tools
+udevadm info --query=all --name=[devicename], view device info
+lsusb, list usb devices
+lspci, list pci devices
+lsscsi, list scsi devices
+dd if=[1stdir] of=[2nddir] bs=[num], convert and copy data from if (input file) to of(output file) with bs bytes can use k for kilobyte and m for megabyte
+df -T, reports file system disk usage and other details including -T or type
+fdisk, command line partitioning tool
+sudo parted -l, show info about MBR file system
+parted, command line tool that supports MBR and GPT partitioning
+gparted, GUI version of parted
+gdisk, command line partitioning tool that only supports GPT
+sudo mkfs -t ext4 /dev/sdb2, make file system of type ext4 at point /dev/sdb2
+sudo mount -t ext4 [driveLocation] [mountPoint], mount ext4 file system type to destination at mount point
+sudo unmount [drivelocation/name] or sudo unmount[mountPoint], unmount filesystem
+sudo blkid, output universally unique ids for block devices
+sudo mount UUID=[uuid] [mountPoint], mount universally unique id
+mkswap /dev/sdb2, initialize swap area
+swapon /dev/sdb2, enable swap device
+swapoff /dev/sdb2, remove swap
+df -h, show utilization of currently mount filesystem and make -human readable
+du -h, show disk usage of current directory
+sudo fsck [filesystemname], check consistency of filesystem and repair it
+df -i, show number of inodes left on the system
+ls -li, list files with inode in first field
+stat[directory/filename], list inode for file or directory and other info
+ln [filename] [hardlinkname], create hardlink to file
+ln -s [filename] [linkname], create symbolic link for file
+uname -r, print system info with kernel release version
+strace ls, check system calls made by ls
+sudo apt dist-upgrade, get updated version of distro
+lsmod, list currently loaded modules
+sudo modprobe bluetooth, load bluetooth module try module from /lib/modules/(kernelver)/kernel/drivers
+sudo modprobe -r bluetooth, remove bluetooth module
+service --status-all, list services in System V init implementation
+sudo service networking state, start a service in System V init implementation
+sudo service networking stop, stop a service in System V init implementation
+sudo service networking restart, restart a service in System V init implementation
+ls /etc/init, see list of jobs in System V
+initctl list, view jobs in Upstart init system
+initctl status [job name], view specific jon info in Upstart init system
+sudo initctl start [jobName], manually start a job in Upstart init system
+sudo initctl stop [jobName], manually stop a job in Upstart init system
+sudo initctl restart [jobName], restart networking in Upstart init system
+ls /etc/init, see list of jobs in Upstart init system
+sudo systemctl list-units, list units in Systemd init implementation
+sudo systemctl status [unitName].service, view status of a service in Systemd init
+sudo systemctl start [unitName].service, start a service in Systemd init
+sudo systemctl stop [unitName].service, stop a service in Systemd init
+sudo systemctl restart [unitName].service, restart a service in Systemd init
+sudo systemctl enable [unitName].service, enable a unit in Systemd init
+sudo systemctl disable [unitName].service, disable a unit in Systemd init
+sudo shutdown -h now, shut down now
+sudo shutdown -h +2, shut down in two minutes
+sudo shutdown -r now, restart with shutdown command
+sudo reboot, reboot command
+top, realtime utilization of system resources
+top -p 1, get utilization info of init
+top -p [PID], get utilization info of specific process
+lsof, see what is in use by a process...stands for list open files
+fuser -v, verbose information about the process that is using a file or file user
+ps m, view process threads
+uptime, cpu monitoring command hw long has system been running 
+iostat, output CPU utilization and device utilization and network filesystem report
+vmstat, virtual memory monitoring report
+sudo sar -q, list details from the start of the day
+sudo sar -r, list details of memory usage from the start of the day
+sudo sar -p, list details of CPU usage
+crontab -e, edit the crontab file
+
 
