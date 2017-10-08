@@ -1,0 +1,44 @@
+/etc/sudoers, list of users who can run sudo
+/etc/passwd, lists users including:..username..password..userID..groupID..GECOS field(csv comments)..users home dir and users shell..all users not just human modify with vipw
+/etc/shadow, like passwd except it shows encrypted password and password info..means for authentication and pluggable authenticaion modules (PAM)
+/etc/group, file with groups and different permissions
+/proc filesystem, how the kernel views the system all process information is stored here
+/etc/apt/sources.list, list of preapproved sources to get packages from on debian
+/dev directory, shows devices and device drivers (ls- /dev)
+/dev/sda, SCSI device (first scsi)
+/dev/sdb, SCSI device second harddisk
+/dev/sda3, 3rd partion of first scsi/harddisk
+/dev/zero, device that accepts and discards all input, produces stream of NULL bytes
+/dev/null, device that accepts and discards all input, produces no output
+/dev/random, device that produces random numbers
+/dev/hda, first PATA device found on older systems
+/dev/hdd2, second partition on fourth PATA disk
+/sys, virtual file system mounted here
+sysfs, virtual file system mounted to /sys used to view info and manage devices including info about manufacturer.. model..where it is plugged in..state..heirarchy..just manage devices here not like /dev
+/etc/udev/rules.d, system rules for udev 
+/root, root directory
+/bin, ready to run programs (binaries) are stored here
+/boot, contains kernel boot loader files
+/dev, device files
+/etc, core system configuration directory..only holds config files and no binaries
+/home, personal directories for users
+/lib, holds library files that binaries can use
+/media, used as attachment point for removable media like usb drives
+/mnt, temporarily mounted file systems
+/opt, optional application software packages
+/proc, info about currently running processes
+/run, info about running systems since last boot
+/sbin, contains essential system binaries, can only be run by root
+/srv, site specific data which are served by the system
+/tmp, storage for temp files
+/usr, does not contain user files, meant for installed software and ultities 
+/usr/bin,
+usr/local,
+/var, variable directory used for system logging..user tracking..caches etc
+vfs filesystem
+ext4 filesystem
+Btrfs filesystem
+XFS filesystem
+NTFS filesystem
+HFS+ filesystem
+

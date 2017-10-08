@@ -210,5 +210,78 @@ sudo sar -q, list details from the start of the day
 sudo sar -r, list details of memory usage from the start of the day
 sudo sar -p, list details of CPU usage
 crontab -e, edit the crontab file
+scp [filename] [user@remotehost.com:/remotedir], secure copy local to remote host
+scp [user@remotehost.com:/remotedir] [filename], secure copy remote to local host
+scp -r [directory] [user@remotehost.com:/remotedir], secure copy local directory to remote host
+rsync -zvr [directory] [user@remotehost.com:/remotedir], remote copy/sync verbose recursive and compressed file
+rsync -zhr [user@remotehost.com:/remotedir] [directory], remote copy/sync from remote to local compressed human-readable recursive directory
+rsync [local1] [local2], remote sync/copy from local directory to other local directory
+python -m SimpleHTTPServer, python quick local server that other machines can access
+sudo service nfsclient start, start simple network file share NFS
+samba, Secure message block protocol for network file share between Linux and Windows
+ifconfig -a, list all available network interfaces
+ifconfig -s, list all network interfaces in a short list
+ifconfig, allows us to configure our network interfaces
+eth0, first ethernet card
+wlan0, wireless interface
+lo, loopback interface (represents your computer)
+sudo route -n, show routing table 
+ifup [interface], bring up an interface
+ifdown [interface], bring down an interface
+ip link show, show network interface info for all interfaces
+ip -s link show [interfacename], show statistics of a network interface
+ip, command that allows us to manipulate networking stack of a system -- preferred method of network settings manipulation
+ip address show, show ip addresses allocated to network interfaces
+ip link set [interface] up, bring ip network interface up
+ip link set [interface] down, bring ip network interface down
+ip address add [ip address] dev [interface], add an ip address to a network interface
+sudo route add -net [ip/netmask] gw [local], add a new route
+ip route add  [ipaddress] via [local], add a new route
+sudo route del -net [ipaddress], delete a route
+ip route delete [ipaddress] via [local], delete a route
+ip route delete [ipaddress], delete a route
+sudo dhclient, uses DHCP (Dynamic Host Configuration Protocol) to get fresh ip address
+nm-tool, reports network manage's state and it's devices
+nmcli, allows you to control and modify Network Manager
+arp, allows you to see locally stored ARP cache on your system (empty on boot)
+ip neighbour show, see locally stored ARP cache on system with ip command
+ICMP type 0, echo reply
+ICMP type 3 code 1, destination unreachable and host unreachable
+ICMP type 3 code 0, destination unreachable and network unreachable
+ICMP type 8, echo request
+ICMP type 11, time exceeded
+ping -c 3 [destination], send 3 echo request packets to destination like www.google.com
+netstat -at, shows listening and non-listening sockets for only TCP network connections 
+wireshark, fully featured packet analyzer
+tcpdump, linux based packet analyzer
+nslookup [hostname], name server lookup tool used to query name servers to find info about resource records
+dig [hostname], domain information grouper...tool for getting info about DNS name servers great for troubleshooting DNS issues
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
