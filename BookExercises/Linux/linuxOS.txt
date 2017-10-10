@@ -259,4 +259,130 @@ Ampersand means to start in the background
 
 
 REGEX
-    
+    used by many UNIX program (grep, sed, vi, emacs, regexp)
+    Libraries for REGEX
+        grep (basic)
+        /usr/xpg4/bin/grep -E
+        Perl
+    grep example
+        grep "FINDME" fileToSearch
+    grep
+        filter
+        search Globally for lines matching the Regular Expression and Print them
+        means Search
+    Basic REs --- Operators
+        * -- match 0 or more of the previous character
+        ^ -- circumflex at the beginning of the RE indicates RE must start at the beginning
+        $ -- placed at end of RE, matches the end of the string
+        Pattern     Matches
+        jon         matches any string that contains Jon
+        ^abc        matches any string that starts with abc
+        abc$        matches any string that ends with abc
+        ^Will George$   matches any string that exactly says Will George
+        .           matches any single character
+        \.          quotes a special character like . here
+        [abc]       matches any one character inside the brackets
+        [^abc]      matches any one character except those in brackets
+    Ranges
+        [a-z]       matches any character from a to z
+        [^a-z]      anything but the characters from a-z
+    Decisions
+        \|          OR operator with \ escape     
+        \(word\) \{number\}     Look for patterns that are repeated at least Number times
+        \( \)       paranteheses will capture matched string for later use
+        \number     allows you to specify string should match the nth pattern that you have captured
+
+Pipes and Redirection (Interprocess Communication (IPC)
+    Sharing open files
+        Files stay open when you exec to prevent use:
+            Close-on-exec
+                Tells kernel to close open files on exec because open files are inhertied by child processes (fd is shared) which can cause security issues
+                Set for every fd you do not want to share
+                Inherited through fork
+        I/O redirection
+            Pipes: redirectr input and output b/w different processes
+            Possible becuase open files are shared across fork() and exec()
+            kernel opens stdin, stdout and stderr for every process created
+            You can change where the standard IO streams are coming or going after fork() but before exec() using dup2(fd1, fd2)
+        Real IPC
+            Intermediate/Temporary Files
+            Pipes - b/w two processes forked by common ancestor
+            FIFOs (named pipes) - two processes on same machine
+            SysV message IPC - communication between processes on same machine
+                not a simple byte stream
+                supports messages categories for priorities
+            Sockets- two processes separated by a network
+        Between process IPC
+            dup2()
+            On Same machine?
+                temp/intermediate files
+                    -writes to disk slow
+                    -no good way to track when other processes readt to recieve or send data
+                pipes
+                    connect an output only fd in one process to an input only fd in another
+        Pipe Creation
+            1. fd share across fork() and exec()
+            2. parent creates pipe which creates two new fd one in and one out
+            3. parent forks and execs (parent and child have fds)
+            4. Child reads from input fd and parent process writes to output fd
+        flow control with read()
+            - receives data and return immediately the number of bytes read
+            - if no data it will lcok waiting for data and process is suspended
+            - system call
+        flow control with write()
+            - will not return until all data has been written
+            - pipe have a size (only so much data can fit)
+            - will block until space becomes available as other process reads data from pipe
+        fpathconf()
+            -determines the size of a pipe
+        Closing pipes
+            - if process A closes pipe B's read() will return 0
+            - if B closes input pipe write will return -1 and errno in A will be set to EPIPE
+            - A will be sent SIGPIPE signal
+
+
+Signals
+    Kernel intiates contact with a user process using SIGNALS
+    Uses:   
+        Process has done something wrong
+            SIGBUS = bus error (invalid memory address)
+            SIGSEGV = segmentation fault
+            SIGFPE = floating point error
+            SIGILL = trying to execute an illegal machine instruction
+            SIGSYS = executing an illegal system call
+        timer has expired
+            If you want to wait you can do so with wait() ..consumes resources
+            Or tell kernel you want to be notified when time passes
+            SIGALARM - alarm(), ualarm(), sleep()
+            SIGCHILD, when called parent process can call wait() or waitpid()
+        child has completed executing
+            SIGCHILD
+        event associated with the terminal has occurred ex:ctrl-c
+        Process on the other end of communication has gone away
+        Suspend and resume execution of process
+        Terminate process
+            SIGTERM 15
+            SIGKILL 9
+        2 user-defined signals
+            SIGUSR1
+            SIGUSR2
+    3 Ways to handle a signal
+        1. Ignore it
+        2. Take default action
+        3. Specify a function that should be called when a type of signal arrives
+    sigaction Structure
+        First attribute
+            SIF_DFL - take default action
+            SIG_IGN - ignore the signal
+            A pointer to a function that is called when signal is received
+    Blocking signals
+        Means signal is delayed until it is unblocked
+        done with sigprocmask()
+    Waiting for a signal
+        pause() - suspends process or thread permanently 
+    Signals and system calls
+        Signals can occur in the middle of a system call
+        System calls return an error EINTR
+    Sending signals to yourself
+        alarm() or raise()
+        - can only have one alarm active at a time
