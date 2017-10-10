@@ -386,3 +386,222 @@ Signals
     Sending signals to yourself
         alarm() or raise()
         - can only have one alarm active at a time
+
+Named Pipes/FIFOs
+    - A persistent pipe
+    - Any process can open a FIFO
+    - exist as special files in the file system
+    - created re: mififo() system call or with the mknod or mkfifo shell commands
+    - Why?
+        - want to build a client-server on a single machine but don't want to deal with sockets
+        - want to access one end of the FIFO with a non-network aware program
+
+Network Communication IPC
+Terminology
+    Client/Server architecture, networking arrangement such that one process is waiting for new connections from others
+    Client, process that initiates
+    Server, process thats always running, waiting for new connection initiations from client processes
+    daemon, process running in the background always have init process as their parent
+
+TCP/IP
+    - transmission protocol
+    - provided by the OS to user processes
+    - Only passes bytes between processes (does not interpret bytes (application layer))
+    - Handshaking
+        1. Closed Client
+        2. Client: Create TCB send SYN
+        3. Server passively open, create TCB
+        4. Server wait for client
+        5. Server recieve SYN and send SYN-ACK
+        6. Client recieve SYN-ACK and send ACK
+        7. Server recieve ACK
+        8. Connection established
+Text protocol debugging tool
+    - telnet helps debug text-based protocols
+    - you can pass telnet a second parameter that specifies the port number
+Non-Text based application protocols
+    -TCP/IP can transfer binary data
+    -Advantages of text-based
+        - easy to debug
+        - easy to communicate an understand (and teach)
+    -Disadvantages of text-based
+        - not compact or efficient
+        - server can spend a lot of time just parsing text
+IP does not guarantee
+    -Data integrity
+    -Packet Order
+    -Prevention of duplicates
+    -Packet will actually arrive
+TCP can:
+    -re-order packets
+    -request packet re-transmission
+    -drop duplicates
+    -connection oriented
+    -won't lose packets
+Network PIs (programming interfaces)
+    -X/OPen Transport Interface
+    -Berkley Sockets
+        --end point of a communication link between processes
+        --treats network connections like files
+        --developed for BSD UNIX under a grant for DARPA
+    File Descriptor table after call to socket command
+    - Client must know the IP addess and port of the server beforehand
+        -IP address only ID's the machine not the process
+        - each process is on a unique port..complete address is IP and port
+Client Sockets
+    Process:
+        1.Create socket endpoint - socket()
+        2. connect the socket to the server - connect
+        3. use read() and write() or send() and recv() to transfer data
+Send
+    Will block until all the data has been sent or the connection goes away
+    Fails happen due to:
+        - Client disconnect (STOP button in browser)
+        - Network Partitions
+        - Network failure
+Receive 
+    Data may arrive in odd size bundles
+    recv() or read() will return exact amount of data that has arrived
+    More data may be coming as long as return value is greater than 0
+    recv() and read() will block if the connection is open but no data is available
+Server Sockets
+    - server socket listens on a given port
+    - many clients may be connecting to that port
+    - would like a separate fd for each client connection
+    1. Client requests connection
+    2. Server creates new file descriptor for client which is used for bi-directional communication
+    3. Other clients request connection can now be serviced
+Non_concurrent Procedure
+    1. Create network endpoint with socket()
+    2. Bind socket to a port - bind()
+        Ports allow multiple network processes on a machine with a single address
+        Server has to choose a port where clients can contact it
+        bind() associates the chosen port with a socket already created with the socket() command
+    3. Start listening for connections - listen()
+        Server will ignore any connection attempts until you invoke listen() command
+    4. Loop and accept connections - accept()
+        Servers run continually, waiting for clients to contact them
+        Has an infinite loop that continually processes connetions from clients
+        The accept() function takes the next connection off of the listen queue or blocks the proces until a connection arrives
+
+CONCURRENT PROCEDURES
+    - want to maximize 
+        - throughput (connections serviced/second)
+        - hardware utilization (%CPU usage)
+    - tradeoffs
+        -response time vs throughput vs hardware utilization vs complexity
+    -Can be provided in two ways---
+        - Apparent concurrency
+            - A single thread of execution, using the select() command and non-blocking I/O
+            - When I/O would block switch connection 
+            - Up to a certain number of connections
+                - Maximize CPU utilization
+                - Increase throughput
+            - Less programming issues but code is more complicated and only works if request are short
+        - Real Concurrency with Threads
+            - Mulitple threads of execution
+                - could be multiple processes, each with one thread
+            - OS preempts thread/process after each quantum
+            - Response time not dependent on length of previous clients request
+            - Harder to design, implement, and maintain
+            - up to a certain number of connections
+                - Maximize CPU utilization
+                - maximize response time
+                - Increase throughput
+            - if too many concurrent connections
+                - everything gets worse -> server eventually hangs
+                - need to put limits on concurrent connections
+            - Four methods
+                - create process per client connection
+                    -fork a new process to handle each connection
+                    -Advantages;
+                        - minimal shared state to manage
+                    -Disadvantages
+                        - process creation (fork) is slow
+                        - context-switching between procs is also slow (minor compared to fork)
+                - a pool of available processes
+                    -Maintain a pool of iterative processes to handle connections
+                    -Advantages
+                        - no longer have to fork
+                        - have rapid response as long as there is an idle process available
+                        - Can set the pool size, that you don't overload the hardware
+                    -Disadvantages
+                        - still have process context switching
+                - one process, create one thread per connection
+                    - Thread allows mutiple concurrent execution contexts within a single process
+                    - Can implement a web server as a single process with multiple threads
+                        - either one per connection or a pool of threads
+                    -select()
+                        - designed for server-like applications that have many communicatin channels open at once
+                            -Data may become available at any time on any channel
+                            - want to minimize delay between wehn data/space becomes available and your process calls read() or write()
+                            - You give select a list of fd and it returns when any one becomes read or writable
+                            - if multiple pipes are open you don't want to be waiting on events for all of them you don't want to spend all of your time looping through each so you use SELECT()
+                        - if a fd becomes readable a bit is set in readfds
+                        - if an fd becomes writable a bit is set in the writefds
+                        - if an erroror exceptional event occurs then bit is set in errorfds
+                    -Advantages
+                        -Can sometimes avoid context-swtiches
+                        -Can share data easily
+                    -Disadvantages
+                        - Code must be thread-safe (AKA re-entrant)
+                        - Must always worry about inadvertent data sharing
+
+                - one process, a pool of available threads
+    5. Read and write data to client - send(), recv(), read(), write()
+
+UNIX Security
+    Dual-Mode operation
+        -OS must ensure that an incorrect program cannot cause other programs to execute wrong
+        -Provide hardware support to differentiate between two operation modes
+            1. User mode - execution by user
+            2. Monitor mode - (supervisor or system mode) execution done by OS
+        -if interrupt or fault - hardware goes to monitor mode
+        
+        - I/O Protection
+            - all I/O instructions are privileged (can only be issued in monitor mode)
+            - user program can never gain control of the computer in monitor mode
+        - Memory Protection
+            - need tow registers that deterine range of legal addresses a program may access (base and limit register)
+            - memory outside of range is protected
+        - CPU protection
+            Timer - interrupts computer after specified period to ensure operating system maintains control
+            Used to implement time sharing
+            Load-timer is a privileged instruction
+    
+    General System Architecture
+        - How to perform privileged instructions?
+            - System Calls -- method used by a process to request action by the OS
+                - usually takes the form of a trap to a specific location in the interrupt vector
+                - control passes through the interrupt vector to a sevice routine in the OS, mode bit is set to monitor mode
+                - monitor verifies the parameters are correct and legal, executes and returns control to the instruction
+    effective id
+    real id 
+    SUID, user security bit where executible runs with effective user ID of the owner of the file
+    SGID, executable runs with effective user ID of the group owner of the file
+    -both have bits that enable them to run as different users rather than being a different user like "su" allows
+
+    Strongest Security
+        - Physical Isolation
+            - even with disable local shell access bootable devices can access the HD of the computer
+            - hard drive can be stolen
+
+Montioring and Logs
+    - Network
+    - Account Login/logout
+    - Program usage
+    - Others
+            
+Awk scripting language
+- features associative arrays
+    -- maps arbitrary objects to arbitrary objects
+    - aka map, hash, lookup table
+Daemons
+    - typically launched at boot time to:
+        - respond to network requests
+        - monitor activities
+        - manage account billkeeping
+        - rotate/maintain/record logs
+
+gdb - debugger program
+best degugging technique - trace statements

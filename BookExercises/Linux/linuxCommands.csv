@@ -289,5 +289,7 @@ source [filename], bash builtin synonym for "."
 type [-afptP] [name], bash builtin command that for each name indicates how it would be interprested if used as a command name
 typeset [-afFgrxilnrtux] [-p] [name[=value]], bash builtin command for compatibility with Korn shell ... synonym for declare command
 ulimit [-HSabcdefiklmnpqrstuvxPT] [limit], bash builtin command that provides control over the resources available to processes started by the shell, on systems that allow such control
-
+mknod, command to make FIFO file or node
+mkfifo, command to make FIFO file
+id, command that prints out your user and group ids
 
