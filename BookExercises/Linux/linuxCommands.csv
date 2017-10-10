@@ -25,15 +25,16 @@ rm -f [file], force remove file
 rm -i [file], interactive remove file
 rmdir [dirname], remove directory
 find [directory] -name [filename], find file in directory with name
-help [command],get help with command
+help [command],bash builtin commands that get help with command
 [command] --help,get help with command alternative
 man [command],man pages for command
 whatis [command],brief description of command
-alias [aliasname]=[command], give common command an alias name
-unalias [aliasname], unalias aliased command
+alias [aliasname]=[command], bash built-in command that gives common command an alias name
+alias, bash built in command outputs list of aliases to standard output in a form that allows them to be reused as input
+unalias [aliasname], bash builtin command that unaliases aliased command if -a flag set all aliases removed
 exit,leave terminal
-logout,logout user
-echo [phrase], output item to sdout
+logout,bash builtin command logout user returning a status of n to the shells parent
+echo [-neE] [phrase], bash builtin command output item to sdout
 echo > [filename], output item and replace current text in filename
 echo >> [filename], append to text currently at filename
 <,redirect to stdin
@@ -270,3 +271,23 @@ setenv, view and edit enviroment from csh or tcsh
 unsetenv, view edit enviroment variables in csh or tcsh
 kfork, used to kill programs
 &, flag to start program in the background
+bind -l, bash built in command that list names of all Readline funcitons
+bind -p. bash built in command that displays Readline function names and bindings in a wat that they can be used as input
+builtin [shell builtin[args]], runs a shell builin passing it args and returning its exit status
+caller [expr], bash builtin command that returns the context of any active subroutine call
+command [-pVv] command [args], bash built in function that runs command with arguments ignoring any shell function named command
+gsettings set org.gnome.desktop.background picture-uri "file:///home/username/path/to/image.jpg"
+declare [-aAfFgilnrtux] [-p] [name], bash built in function that declares variables and gives them attributes
+enable [-a] [-dnps] [-f filename] [name], bash builtin command that enables and disable builtin shell commands
+let [expression], bash builtin command that allows arithmetic to be performed on shell variables
+local [option] [name]=[value], bash builtin function that creates a local variable and assigns ita value
+mapfile, bash builtin command that reads lines from standard input into an indexed array variable array or from file descriptor fd if the -u option is supplied
+printf [-v var] format [args], bash builtin that write the formatted args to standard output -v causes the output to be assigned to var rather than being printed to stdout
+read [-ers] [-a aname] [-d delim] [-i text] [-n nchars] [-N nchars] [-p prompt] [-t timeout] [-u fd] [name], bash builtin command where one line is read from stdin or from fd and split into words each assigned to the name
+readarray [-d delim] [-n count] [-0 origin] [-s count] [-t] [-u fd], bash builtin command where lines are read from stdin into the indexed array or from fd...synonomy for mapfile
+source [filename], bash builtin synonym for "."
+type [-afptP] [name], bash builtin command that for each name indicates how it would be interprested if used as a command name
+typeset [-afFgrxilnrtux] [-p] [name[=value]], bash builtin command for compatibility with Korn shell ... synonym for declare command
+ulimit [-HSabcdefiklmnpqrstuvxPT] [limit], bash builtin command that provides control over the resources available to processes started by the shell, on systems that allow such control
+
+
