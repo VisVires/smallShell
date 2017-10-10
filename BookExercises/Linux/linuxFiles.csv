@@ -35,10 +35,52 @@ sysfs, virtual file system mounted to /sys used to view info and manage devices 
 /usr/bin,
 usr/local,
 /var, variable directory used for system logging..user tracking..caches etc
-vfs filesystem
-ext4 filesystem
-Btrfs filesystem
-XFS filesystem
-NTFS filesystem
-HFS+ filesystem
-
+vfs filesystem, abstraction layer that allows for different types of file systems to work with all applications
+ext4 filesystem, most current version of linux filesystem
+Btrfs filesystem, high performance journaling file system, great for system with large files
+XFS filesystem, high performance journaling file system
+NTFS filesystem, windows file systems
+HFS+ filesystem, macintosdh file system
+/etc/fstab, short for file system table and holds permanent list of mounted filesystems
+GRUB, GRand unified bootloader
+Kernel, core of the OS with three layer of abstraction
+Layers of Abstraction for the kernel, hardware..kernel...user space
+vmlinuz, acutal linux kernel
+initrd, temp file system used before loading the kernel
+system.map, symbolic lookup table for the kernel
+config, kernel configuration settings file
+lib/modules/(kernel version)/kernel/drivers, file where kernel module drivers are
+/etc/initab, init file that exists in System V init implementations
+/usr/share/upstart, init file that exists in Upstart init implementations
+/etc/init, in Upstart implementations shows list of jobs 
+/usr/lib/systemd, init file that exists in Systemd init implementations
+/etc/systemd/system, config file for systemd
+/.usr/lib/systemd/system, config file for systemd
+poweroff.target, shutdown system goal file for systemd
+rescue.target, single user mode goal file for systemd
+muli-user.target, mulit-user with networking goal file for systemd
+grphical.target, mulituser with networking and GUI goal file for systemd
+reboot.target, restart file goal for systemd
+default.target, defualt boot goal for systemd normally graphical.target
+.service , service units...services we've been starting and stopping in systemd
+.mount , mount filesystems in systemd
+.target , groups other units in systemd
+/proc/cpuinfo, file where we store cpu information including number of cores
+/var/log/syslog, output of syslog which shows event messages that occur
+/etc/syslog.d, keeps config details of what files are maintained in syslog for output
+/var/log/messages, general log file that holds all non-critical and non-debug messages from bottupm authm cron etc.
+/var/log/syslog, general log file that holds everything except auth messages ... very useful for debugging
+/var/log/dmesg, log file that shows info about hardware drivers .. kernel info and status during bootup and more
+/var/log/auth.log, log file that contains auth logs like user logins and authentication used
+/var/logkern.log, log file that logs the kernel info and events on your system
+/etc/logrotate.d, log file utility that decides what logs to keep..how many..and how to compress
+/etc/network/interfaces, file that holds information for all network interfaces
+dhclient.conf, file that DHCP gets list of netowrk interfaces from
+dhclient.leases, file that DHCP uses to keep track of leases across system reboots
+/etc/hosts, file that contains mappings of hostnames to IP addresses where hosts look first for IP address mappings
+/etc/hosts.deny, file for host mappings that cannot be accessed
+/etc/hosts.allow, file for host mappings that can be accessed
+/etc/resolv.conf, file used to map DNS servers for more effecient lookups..ulitmately made irrelevant due to improvements to DNS
+/usr/local/bin/bash, BASH or Bourne-again shell
+/usr/local/bin/tcsh, Enhanced C-Shell
+/bin/ksh, Korn Shell

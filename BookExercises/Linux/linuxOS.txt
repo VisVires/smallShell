@@ -1,0 +1,262 @@
+Operating Systems Lectures
+
+What is an OS?
+    Software program that sits between the applications and computational hardware
+Why OS's important?
+    Most applications interact with the OS
+Goals of an OS
+    Universal
+        Provide convenient software interface to hardware resources
+        Maximuize utilization of hardware
+        Solve Contention
+        Provide Services
+    Common
+        Provide security
+            protect against buggy applications/crashes
+            control access to your data by others
+        Support software development
+        Provide standardized software libraries
+            Including a standardized user interface
+Definitions
+Program, stored algorithm or plan of execution
+Process, A program that has been loaded into memory and is executing
+Thread, a line of execution in a process
+Standard OS Services
+    Process and thread management
+        start a program (become a process and thread)
+        Ending a process/thread
+        Debugging programs/processes
+    File and input/output management
+        Organizing bits into meaningful structures: Files
+        Providing interfaces for reading and writing to files
+        communicating with external devices
+        organizing files into directories
+    Interprocess Communication (IPC)
+        Signals, pipes, network sockets (TCP/IP)
+    Process Coordination
+        Contention Management == shared access
+Interacting the OS
+    Users
+        via GUI
+        via CLI
+    Programs
+        via functions
+            system calls
+            API (application programming interface) functions
+        via Network Communication
+            Message-based
+            Connection based
+
+UNIX
+Jan 1st 1970, time zero for UNIX
+BASH, bourne again shell (/usr/local/bin/bash)
+TCSH, enhanced C-shell (/usr/local/bin/tcsh)
+Korn, Shell (/bin/ksh)
+chsh, changes the shell
+user commands, commands that can only be run from the shell and shell scripts
+system calls, request for service that causes the normal CPU execution to be interrupetd and control to be given to the OS ex: read and write
+What is the shell?
+    Unix based user interface
+    Text based
+    Provides access to all UNIX user level files
+        Start programs
+        manage running programs (pipes)
+        manage I/O to and from programs (redirection)
+        Kill programs
+Pipes, pass the standard output into the next commands standard input
+#!/bin/bash will invoke the shell specified in the file
+IF THEN ELIF LOOP
+    if command
+    then
+        command
+    elif
+        command
+    then
+        command
+    else
+        command
+    fi
+WHILE LOOP
+    while command1
+    do
+        command2
+    done
+FOR LOOP
+    for i in a b c d
+    do
+         command
+    done
+Quoting
+    Single quotes protect all metacharacters
+    Double quotes protect spaces
+        Variables are expanded
+    Backslash
+        protects signle metacharacter like / or $
+Trap command, used to catch signals and clean up
+
+Unix File Structure
+
+files, hard links to inodes
+inodes, contain all meta-info.. a reference count..pointers to actual file data and identified by inode number 
+
+Modern OS Concepts
+The underlying hardware
+    OS provides applications access to the hardware in an abstracted manner
+    Processor
+        Series of registers
+            Stores a number
+        Program counter
+            contains memory address of next instruction of thread
+        Stack pointer
+            contains memory address of the current thread's stack
+        Execution Circuitry
+        High Speed Cache
+            Connects to RAM (memory) and all other devices
+    Memory
+        Array of bytes where each has an address
+        Temporary storage, slower than the process and cache but faster than a disk
+    Persistent Storage
+        Magnetic Disk
+        Non-volatile memory (flash etc)
+        Optical (CD, DVD, BD)
+        Slow, but persists without power
+    Virtual Memory
+        Creates illusion of 
+            Exclusive Memory (not shared)
+            Unlimited Memory (up to maximum address size)
+Concurrency
+    Multiple processes executing at the same time
+    Greatly increases the efficiency of an OS
+        While one process is waiting for I/O another process can use the CPU
+Multiprogramming
+    More than one process can be ready to execute
+    System calls trigger "context switches" which let the next process run
+    Process will not execute again until its system call returns
+Timesharing
+    CPU time split between multiple processes
+    Gives illusion that many processes are running at once
+Complications
+    Concurrently running processes can share data and/or resources
+Race Conditions
+    flaw in a system or process where the output exhibits unexpected critical dependence on the relative timing of events
+If 2+ processes access a resource concurrently you must provide access control with:
+Locks
+    Only process owning lock may access resource
+    many ways to do locking
+    locking usually requires support from the OS
+
+UNIX PARADIGM
+EVERYTHING IS A FILE
+    even directories and hardware devices...processes are not files though
+A file is a stream of bytes according to the system programmer
+    An array
+    Newlines/carriage returns and tabs are all bytes
+    Its persistent and stored on a magnetic disk
+
+PROCESSES
+Process management is a necessary component of an OS
+Process ---
+    Instance of executing a program
+    Collection of execution resources associated with an executing program
+Program vs Process
+    Program 
+        executable code
+    Process
+        Running instance of a program
+        more than one processes can be concurrently executing the same program code
+            will have seperate execution resources
+                virtual address spaces, process id
+            On modern OS
+                some resources will be shared if two process are executing the same program code
+    UNIX PROCESS
+        Consists of:
+            Unique identity PID
+            Virtual address space
+            Program code and data(variables) in memory
+            User, group identity and umask value
+            Execution enviroment
+                Enviroment varible, pwd
+                List of open files
+                Description of actions to take on receiving signals
+            Resource limits, scheduling priority
+Process States
+    Running - On CPU
+    Waiting - blocked and waitng for IO, timer alarm or signal
+    Zombie - Exited and waiting for cleanup
+    Runnable - waiting for CPU
+Fork
+    Child Process gets____from parent:
+        Process credentials
+        Enviroment
+        stack
+        memory
+        open fd
+        close on exec flags
+        signal handling settings
+        nice value
+        scheduler class
+        process group ID
+        session ID
+        current working directory
+        file mode creation mask (umask)
+        root directory
+        resource limits
+        controlling terminal
+    Child process has unique:
+        PID
+        different parent process ID
+        own copy of fd and directory streams
+        process,text, data and other memory locks not inheritied
+        process time, in the tms struct
+        resource utilizations are set to 0
+        pending signals initialized to the empty set
+        timers created by timer_create not inherited
+        asynchronous input or output operations not inherited
+    Child process exits for two reasons
+        Completes execution and exits normally
+            exit status 0 
+            encounter error condition, recognized it and exit with a non-successful exit status
+        Killed by a signal
+    Parent Checks child exit status for the process to end
+Exec
+    Run different program
+    Short for execute
+    replaces the currently running program
+    Destroys currently running program
+    Does not create a new process, just replace the one its called from
+Process Attributes
+    Process ID
+        Fixed by the kernel
+    Process Group ID or Session ID
+    Enviroment
+        set of text variables used to pass info between shell and a C program
+    Current Directory
+        files specified are searched for in the current directory
+    Real and effective user ids
+        How UNIX implements security
+        Affects
+            access to files and directories
+            signals (you can only kill processes you own)
+            access to priviledged system calls (nice, chroot)
+            resource limits, quotas
+    Real and effective group ids
+    Process Scheduling priority
+
+KILLING ZOMBIES
+    Can only run one process at a time
+    WAITING processes are not consuming resources
+    RUNNABLE processes 
+        number of processes waiting for the CPU only
+    Bounding - 
+        Memory Bound - process you're running is limited by available RAM
+        CPU bound - process you're running is limited by processor speed
+    If a process terminates but its parent doesn't wait, it becomes a ZOMBIE
+        Zombies stay in the system until they are waited for
+    If parent terminates without cleaning up zombies the zombies become ORPHANS
+        Orphans are adobted by INIT 
+    kfork, kill command
+Ampersand means to start in the background
+
+
+REGEX
+    

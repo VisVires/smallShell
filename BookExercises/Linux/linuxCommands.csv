@@ -163,6 +163,8 @@ swapon /dev/sdb2, enable swap device
 swapoff /dev/sdb2, remove swap
 df -h, show utilization of currently mount filesystem and make -human readable
 du -h, show disk usage of current directory
+du, returns total in kb of the specified directory
+df, displays unused space in directory
 sudo fsck [filesystemname], check consistency of filesystem and repair it
 df -i, show number of inodes left on the system
 ls -li, list files with inode in first field
@@ -203,7 +205,7 @@ top -p [PID], get utilization info of specific process
 lsof, see what is in use by a process...stands for list open files
 fuser -v, verbose information about the process that is using a file or file user
 ps m, view process threads
-uptime, cpu monitoring command hw long has system been running 
+uptime, cpu monitoring command how long has system been running and average number of runnable processes over several different periods of time (1 5 and 15 minutes) if longer than 2 processes there is a bottleneck
 iostat, output CPU utilization and device utilization and network filesystem report
 vmstat, virtual memory monitoring report
 sudo sar -q, list details from the start of the day
@@ -256,32 +258,15 @@ wireshark, fully featured packet analyzer
 tcpdump, linux based packet analyzer
 nslookup [hostname], name server lookup tool used to query name servers to find info about resource records
 dig [hostname], domain information grouper...tool for getting info about DNS name servers great for troubleshooting DNS issues
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+dmesg, command that allows you to see the /var/log/dmesg file
+traceroute, means of showing how packets are getting route...builds list of routers that the packets traverse until it gets an ICMP echo reply message..uses TTL of +1 for each router until reply
+chsh, change shell
+telnet,
+script,
+trap [code to execute] [list of signals], command to catch signals and clean up
+lpr, reads in the file and hands the printable data over to the linux printing daemon lpd
+unlink, remove file from inode..cannot do this with directories
+setenv, view and edit enviroment from csh or tcsh
+unsetenv, view edit enviroment variables in csh or tcsh
+kfork, used to kill programs
+&, flag to start program in the background
