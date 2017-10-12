@@ -1,4 +1,58 @@
 DNS Components
 
 Name Server
-    - Load up our DNS settings and configs
+    - Load up our DNS settings and configs and answers any questions from Clients or other servers.
+    - if it doesn't know the answer it redirects
+    - can be authoritive or recursive
+Zone File-
+    Either the information about the Domain OR
+    How to get it
+Resource Records
+    A zone file is made up of these and each line is a record and contains info about the hosts
+    - Includes:
+        Record Name
+        TTL: time after which we discard the record and obtain a new one
+        Class: Namespace of the record information 
+            Most commonly IN for internet
+        Type: Type of info stored in record data
+            A Record
+            MX Record
+            PTR Record
+            CNAME
+            NS Record
+            HINFO Record
+            ISDN Record
+            SOA Record
+        Data: IP if its an A record or something else if it was something else
+
+DNS Process:
+    1. Host asks local DNS where is domain "domainnam.com"
+    2. Local DNS server asks the Root Servers by talking to a recursive DNS server provided by the ISP
+    3. One of 13 root servers (or a mirrored version of it) asks the .com Top-Level Domain DNS server at an IP address it gives us
+    4. We send new request to Top-Level Domain name server. If the TLD server doesn't have "domain.com" in its zone file it will find the Name server that does and send us the IP of that name server
+    5. Send final request to Authoritative DNS server with the record we want which has the zone file and a resource record for www of this host so it sends us the IP address
+
+DNS Setup -- where to find info on how to set up a DNS server
+    BIND: Most popular DNS Server on the Internet
+    DNSmasq: Lightweight and easier to configure than BIND, recommended for smaller network
+    PowerDNS: Full Featured like BIND with more flexibility. Reads info from mulitple databases like MySQL, PostgreSQL etc. 
+
+DNS tools:
+    nslookup [hostname] : query nae servers to find info about resource records
+    dig: tool to get info about DNS name servers, more flexible than NS lookup
+
+DEFINITIONS
+authoritive name server, holds DNS records
+recursive name server, would ask other servers who would ask other servers until they found the authoritive..can also have the information cached
+Zone file, how the name server stores information about the domain or how to get to the domain if it doesn't know
+A Record, maps a domain name to the IP address of the computer hosting the domain...used to find IP address of a computer connected to the internet from a name
+NS Record, Used to delegate a subdomian to a set of name servers...indicates which name servers are authorative for the zone/domain
+PTR record, reverse DNS lookup...uses IP address to get a hostname/domain
+CNAME, Cononical Name record used to specify that a domain name is an alias for another domain. If resolver finds CNAME then it will restart query with the CNAME
+MX record, mail exchanger record...resource record in the DNS that specifies a mail server responsible for accepting email messages on behalf of the recipients domain
+AAAA record, IPv6 record for a given host with a different type of IP address (quad A)
+etc/hosts, contains mappings of some hostnames to IP addresses
+etc/resolv.conf, maps DNS name servers for more efficient lookups
+Host Information Record (HINFO), used to acquire general info about a host. Specifies OS and CPU type. Defines possibility of using system specific protocols when two hosts want to communicate. Not typically used on public servers
+ISDN Record, Integrated services digital network record specifies ISDN address for a host. A telephone number with country code..a national destination code...a ISDN subscriber number and a ISDN subaddress (variation of the A Resource)
+SOA Record, State of Auhority record specifies information about DNS zone including primary name server..email of domain admin...domain serial number and several timers
