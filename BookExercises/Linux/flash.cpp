@@ -28,8 +28,8 @@ void ClearScreen();
 int main(int argc, char **argv){
 
     ifstream myfile;
-    if (argc < 1){
-        cerr << "Usage " << argv[1] << endl;
+    if (argc < 2){
+        cerr << "Usage " << argv[0] << " [fileName].csv" << endl;
         return 1;
     }
     string fileName = (argv[1]);

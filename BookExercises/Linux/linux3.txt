@@ -176,6 +176,7 @@ Packet Traversal Steps
     8. Application layer receives data and presents it as final email message.
 DHCP Overview
     -Dynamic Host Configuration Protocol
+    - Application layer protocol at port 67, UDP Transport Layer
     -DHCP assigns IP addresses, subnet masks and gateways to our machines
     - Allows for network admin to not worry about assigning IP addresses and prevents duplicate IP addresses
     - Every physical network should have its own DHCP server so a host can request an IP, in home router acts as a DHCP server

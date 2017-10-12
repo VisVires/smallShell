@@ -204,11 +204,13 @@ top, realtime utilization of system resources
 top -p 1, get utilization info of init
 top -p [PID], get utilization info of specific process
 lsof, see what is in use by a process...stands for list open files
+lsof -i, display list of open ports
 fuser -v, verbose information about the process that is using a file or file user
 ps m, view process threads
 uptime, cpu monitoring command how long has system been running and average number of runnable processes over several different periods of time (1 5 and 15 minutes) if longer than 2 processes there is a bottleneck
 iostat, output CPU utilization and device utilization and network filesystem report
 vmstat, virtual memory monitoring report
+vmstat -s, lays out the memory usage stats
 sudo sar -q, list details from the start of the day
 sudo sar -r, list details of memory usage from the start of the day
 sudo sar -p, list details of CPU usage
@@ -254,11 +256,17 @@ ICMP type 3 code 0, destination unreachable and network unreachable
 ICMP type 8, echo request
 ICMP type 11, time exceeded
 ping -c 3 [destination], send 3 echo request packets to destination like www.google.com
-netstat -at, shows listening and non-listening sockets for only TCP network connections 
+netstat -at, shows listening and non-listening sockets for only TCP network connections
+netstat -l, show listening or open ports
+netstat --listen, show all listening or open ports
+netstat -vaun, show open UDP ports
+netstat -vatn, show open TCP ports
+netstat -vat, show full DNS hostnames
 wireshark, fully featured packet analyzer
 tcpdump, linux based packet analyzer
 nslookup [hostname], name server lookup tool used to query name servers to find info about resource records
 dig [hostname], domain information grouper...tool for getting info about DNS name servers great for troubleshooting DNS issues
+dig A [hostname], outputs the name of the record..the TTL and the IPv4 address
 dmesg, command that allows you to see the /var/log/dmesg file
 traceroute, means of showing how packets are getting route...builds list of routers that the packets traverse until it gets an ICMP echo reply message..uses TTL of +1 for each router until reply
 chsh, change shell
@@ -292,4 +300,13 @@ ulimit [-HSabcdefiklmnpqrstuvxPT] [limit], bash builtin command that provides co
 mknod, command to make FIFO file or node
 mkfifo, command to make FIFO file
 id, command that prints out your user and group ids
-
+htop, shows memory of current processes
+free, shows available memory can add -k or -m to specify the unit
+dmidecode, gives info about the installed RAM memory
+dmidecode -t [type], gives specific info about installed stuff
+curl, command for downloading info from the internet that lets you use wild cards cannot recover from failures can specify multiple urls in one command
+wget, download files from networks...can be used to recursively download files can recover from failures
+curl ifconfig.me, output public IP address
+ip addr show [interface], show Private IP address
+hostname -I, output private IP addresses
+sudo telinit [Number], change run level

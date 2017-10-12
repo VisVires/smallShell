@@ -84,3 +84,4 @@ dhclient.leases, file that DHCP uses to keep track of leases across system reboo
 /usr/local/bin/bash, BASH or Bourne-again shell
 /usr/local/bin/tcsh, Enhanced C-Shell
 /bin/ksh, Korn Shell
+/boot/grub/grub.conf or /etc/grub.conf, grub config file contains kernel and initrd image

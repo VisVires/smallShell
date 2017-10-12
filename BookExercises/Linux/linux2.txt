@@ -210,7 +210,7 @@ Bootloader
     To find the kernel you need to look at the kernel parameters
     To find it go into GRUB menu at startup and press e it shows:
         --- initrd - location of initial RAM disk
-        --- BOOT_IMAGE - where the kerne image is located
+        --- BOOT_IMAGE - where the kernel image is located
         --- root - location of root filesystem, where init will be found by kernel
         --- ro - mounts the filesystem as read-only mode
         --- quiet - added so you don't see display messages going through during boot
@@ -218,7 +218,7 @@ Bootloader
 Kernel
     Initrd vs Initramfs
         Initrd - initial ram disk, originally used to hold essential modules the kernel needs to get the rest of the hardware because not all drivers are available to kernel at startup
-        Initramfs - temporary root filesystem that is built into the kernel to load all necessarydrivers for the real root filesystem
+        Initramfs - temporary root filesystem that is built into the kernel to load all necessary drivers for the real root filesystem
     Mounting the root filesystem
         Root partition is mounted in read only mode so that fsck can run and check for system integrity. Then it remounts the root filesystem in read-write mode. Then kernel locates init and executes it
 Init Program
