@@ -1,0 +1,102 @@
+LISTS
+    METHOD          USE             Explanation
+    append          l.append(item)
+    insert          l.insert(index ,item)
+    pop             l.pop()
+    pop             l.pop(index)
+    sort            l.sort()
+    l.reverse       l.reverse()
+    del             del l[index]
+    count           l.count(item)
+    remove          l.remove(item)
+
+STRINGS
+    Lists are mutable Strings and Tuples are not
+        You can modify a list with by using indexing and assignment, which you can't do with a string 
+    
+    Method          Use             Explanation
+    center          s.center(w)
+    count           s.count(item)
+    ljust           s.ljust(w)
+    lower           s.lower()
+    rjust           s.rjust(w)
+    find            s.find(item)
+    split           s.split(char)
+
+SETS
+    Operators       Example
+        in          x.in(set)          
+        len         len(set)
+        |           set1 | set2     Retuerns all elements in both sets
+        &           set1 & set2     Returns all elements in both in set1 and 2
+        -           set1 - set 2    Returns all elements in set1 not in set2
+        <=          set1 <= set2    Are all elements of set1 in set 2
+
+        -Sets are heterogeneous, immutable python data objects, each item unique
+        - declared with curly braces rather than []
+
+    Method              Use                     Explanation
+        Union           set1.union(set2)        new set with all elements of both
+        intersection    set1.intersection(set2) new set with only common elements
+        difference      set1.difference(set2)   new set with only items in 1 and not 2
+        issubset        set1.issubset(set2)     if all elements are in 1 and not 2
+        add             set1.add(item)          add item to set
+        remove          set1.remove(item)       remove item from set
+        pop             set1.pop()              remove arbitrary element from set
+        clear           set1.clear              remove all elements
+
+
+DICTIONARY
+    Operators           Use
+    []                  d[key]
+    in                  key in d
+    del                 del d[key]
+    :                   key:value
+
+    - declared with curly braces
+    - comma delimited key:value pairs
+
+    Method              Use                     Explanation
+        keys            d.keys()                returns all keys
+        values          d.values()              returns all values
+        items           d.items()               returns key value pairs
+        get             d.get(key)              returns value associated with key or none
+        get             d.get(key, alt)         returns k or alt if key doesn't exist
+
+
+INPUT/OUTPUT
+
+userName = input("input prompt")
+    - input function will always be a string and user must convert it to determined type
+        user_radius = input("Enter radius")
+        radius = float(user_radius)
+
+    String Formatting
+    PRINT FUNCTION
+        - takes one or more arguments then outputs them using a single blank a default sep
+        - change sep by using sep="new sep" 
+        - each string ends in new line but can be changed using end="new end"
+
+    FORMATTED STRINGS
+        String formatting characters
+            Character           Output Format
+                d,i                 Integer
+                u                   unsigned int
+                f                   float m.fffff
+                e                   float as m.ffffe+/-x
+                E                   float as m.ffffE+/-x
+                g                   Use %e for exponents less than -4 or greater than +5 otherwise %f
+                c                   Single char
+                s                   String
+                %                   literal
+            Modifier        use         Description
+                number      %20d            put value in field of length 20
+                -           %-20d           left-justify in field of length 20
+                +           %+20d           right-justify in field of length 20
+                0           %020d           leading zero-fill in field length of 20
+                .           %20.2f          field length 2 with 2 chars to the right like "     4.00
+                (name)      %(name)d        get value using the name as the key
+        Example: print("%s is %d years old." % (name, age) can also be: 
+                 print(age, "is", age, "years old.")
+            Method
+                format()
