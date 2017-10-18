@@ -10,6 +10,36 @@ LISTS
     count           l.count(item)
     remove          l.remove(item)
 
+
+LIST OPERATIONS BIG-O PYTHON
+Grow List                               Big-O
+    append                              O(1)    first
+    concatenate                         O(n)    last
+    list comprehension                  O(1) .. 2nd
+    range based assignment              O(1) .. fastest
+Pop
+    pop end                             O(1)
+    pop beginning                       O(n)    .. has to shift all elements
+    pop middle                          O(n)    .. has to shift all elements behind it
+Get
+    index[i]                            O(1)
+Set         
+    index(i)                            O(1)
+Insert
+    insert(i, item)                     O(n)
+Delete
+    del                                 O(n)
+Iteration                               O(n)
+contains(in)                            O(n)
+getSlice[x:y]                           O(k)
+del slice                               O(n)
+set slice                               O(n+k)
+reverse                                 O(n)
+concatenate                             O(n)
+sort                                    O(n log n)
+multiply                                O(nk)
+
+
 STRINGS
     Lists are mutable Strings and Tuples are not
         You can modify a list with by using indexing and assignment, which you can't do with a string 
@@ -64,6 +94,17 @@ DICTIONARY
         get             d.get(key, alt)         returns k or alt if key doesn't exist
 
 
+DICT OPERATIONS BIG-O PYTHON
+Copy                O(n)
+get item            O(1)
+set item            O(1)
+delete item         O(1)
+contains (in)       O(1)
+iteration           O(n)
+
+
+
+
 INPUT/OUTPUT
 
 userName = input("input prompt")
@@ -100,3 +141,51 @@ userName = input("input prompt")
                  print(age, "is", age, "years old.")
             Method
                 format()
+                
+CONTROL STRUCTURES
+
+while loop:
+    while condition:
+        action
+
+    while condition and not condition:
+        action
+for loop:
+    for item in list/string/tuple:
+        action
+
+    for item in range(num)
+        action
+if else:
+    if condition1:
+        action
+    else
+        action
+
+list comprehension
+    for x in range(1, 11):
+        sq_list.append(x*x) is equivalent to sq_list = [x * x for x in range(1,11)]
+
+    same for only odd values:
+    sq_list =  [x * x for x in range(1,11) if x % 2 != 0]
+    or
+    [ch.upper() for ch in 'comprehension' if ch not in'aeiou']
+
+Exceptions
+    if adverse condition:
+        raise RuntimeError("Error Message")
+    else:
+        action
+
+    try:
+        action with potentional adverse condition
+    except:
+        message outlining condition
+        alternate action?
+
+FUNCTION DEFINTIONS
+    def square(n):
+        return n ** 2
+
+
+
