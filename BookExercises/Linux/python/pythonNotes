@@ -187,5 +187,111 @@ FUNCTION DEFINTIONS
     def square(n):
         return n ** 2
 
+ABSTRACT DATA TYPES
+    STACK
+        Operations                  Python Implementation     
+            s.is_empty()
+            s.push(item)            Append used to add to back rather than insert because O(1) vsO(n)
+            s.pop()                 Remove is from back rather than front because O(1) vs O(n)
+            s.peek()
+            s.size()
+
+        Example Problems:
+            Balanced Symbols "{[(" ")]}"
+            Coverting Decimal to Binary or Hexadecimal or Octal
+            infix, prefix and postfix expressions conversions
+    QUEUES
+        Operations                  Python Implementation
+            q.is_empty()
+            q.enqueue(item)         Uses insert rather than append so O(n)
+            q.size()
+            q.dequeue()             Uses pop so O(1)
+        Example Problems:
+            Hot Potato
+            The Josephus Problem
+            Printing Tasks          
+                Printer class keeps track if busy and of time
+                Task class gives random number of pages, time stamp, and wait time
+    DEQUES
+        Operations                  Python Implementation
+            d.is_empty()
+            d.add_rear(item)        O(n)    rear is at position 0, so it uses insert
+            d.add_front(item)       O(1)    last item so it uses append
+            d.size()    
+            d.remove_rear()         O(n)    d.pop(0) .. removes 1st item
+            d.remove_front()        O(1)    removes last item
+        Example Problems:
+            Palidrome Problem
+                remove and compare first and last and if they are equal continue until size = 1 or 0
+
+LISTS
+    UNORDERED LIST
+        Operations                  Python Implementation
+            add(item)               O(1) .. adds item to front of list and changes head to new item
+            remove(item)            O(n)
+            search(item)            O(n)
+            is_empty()              O(1)
+            size()                  O(n)        uses traversal
+            append(item)            O(1)
+            index(item)             O(n)
+            insert(pos, item)       O(n)
+            pop()                   O(1)
+            pop(pos)                O(n)        uses traversal with current and previous nodes
+        Linked List
+            Node Class
+                class Node:
+                    def __init__(self, data)
+                        self.data = init_data
+                        self.next = None
+                    def get_data(self):
+                        return self.data
+                    def get_next(self):
+                        return self.next
+                    def set_data(self, new_data):
+                        self.data = new_data
+                    def set_next(self, new_next):
+                        self.next = new_next
+            None reference value will denote that there is no next
+    ORDERED LIST
+        Operations                  Python Implementation
+            add(item)               O(n) needs additional reference called previous two steps
+            remove(item)            O(n)
+            search(item)            O(n) ... but can stop earlier due to order
+            is_empty()              O(1)
+            size()                  O(n)
+            index(item)             O(n)
+            pop()                   O(1)
+            pop(pos)                O(n)
 
 
+RECURSION
+    Method of solving problems that involes breaking a problem down into smaller and smaller subproblems
+    Example Problems:
+        Calculating sum of a list of numbers
+            use lots of paranthesis to create an order of operations
+            
+            def list_sum(num_list):
+                #base case
+                if len(num_list) == 1:
+                    return num_list[0]
+                #recursive call
+                else:
+                    return num_list[0] + list_sum(num_list([1:])
+        Convert an Integer to a string in any base
+            Base Case: Reduce original number to a series of single digit numbers
+            Convert single digit number to a string using a lookup
+            Concatenate the single digit strings to form the final result
+        Function to take a string and return true if it is a palindrome
+
+    Solving a smaller problem until it can't get any smaller then piece together the solutions
+
+    THREE LAWS OF RECURSION
+        1. A recursive algorithm must have a base case
+        2. A recursive algorithm must change its state and move toward the base case
+        3. A recursive algorithm must call itself, recursively
+    
+    STACK FRAMES
+        When a function returns the return value is left on top of the stack for the calling function to access
+
+    VISUALISING RECURSION
+        
