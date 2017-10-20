@@ -294,4 +294,22 @@ RECURSION
         When a function returns the return value is left on top of the stack for the calling function to access
 
     VISUALISING RECURSION
-        
+        Turtle Spiral Example
+        Fractal Tree
+            - something that looks the same at all levels of magnification
+            - builds a tree from right to left
+        Sierpinski Triangle
+            - large triangle with ever shrinking smaller triangles inside and a missing middle triangle
+        Tower of Hanoi
+            - can only move one disk at a time
+            - can never have a larger disk on top of a smaller one
+            - base case: one disk
+            - move tower of height - 1 to an intermediate pole using the final pole
+            - move remaining disk to final pole
+            - move tower of height - 1 from intermeidate to final using original pole
+        Maze Exploration
+            -Base Cases
+                - Turtle hits wall
+                - Turtle finds square already explored
+                - Turtle finds exit
+                - Turtle finds it cannot travel in all four directions
