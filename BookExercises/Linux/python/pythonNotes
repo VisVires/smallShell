@@ -313,3 +313,190 @@ RECURSION
                 - Turtle finds square already explored
                 - Turtle finds exit
                 - Turtle finds it cannot travel in all four directions
+SEARCHING AND SORTING
+    SEQUENTIAL SEARCH
+        O(n)
+    BINARY SEARCH 
+        O(log n)
+        Divide and Conquer Strategy
+            Divide the problem into smaller pieces, solve the smaller pieces then reassemble the problem
+        binary_search(a_list[:midpoint], item)
+        If it uses slice then it will not perfom in strict logarithmic time because slice is O(k)
+    HASHING
+        Hash Function
+            takes item in collection and returns and integer in the range of slot names
+            Collision/Clash
+                When two items need to be in the same slot
+        Perfect Hash Function
+            Every item has a unique slot
+            Not possible if an arbitrary collection of items
+            One way to do this is to have a increasing size so collisions are not possible
+                Not feasible with huge collections of items
+            Folding Method
+                Divide group into equal pieces(except the last piece) then add them together, some reverse every other piece then add.
+            Mid-Square Method
+                First Square the item tehn extract some portion of teh resulting digits
+                    Example 44:
+                        44^2 = 1936 then take 93 % 11 = 5
+            Character Based:
+                Sequence of Ordinal Values...so cat = 99 + 97 + 116
+                Can use character position as a weighing factor
+        Open - addressing
+            Try to find next open slot
+            Linear Probing - systematically looking for the next open spot
+            Need to use the same methods for finding items that you do hashing them
+                Clustering - items can become clustered in the table 
+                    Fix: Instead of linear probing, look at every other slot or every third (plus3)
+                    Also called rehashing
+                        new value = rehash(old value)
+                                   = (pos + 3)% table size
+                    Size of skip should be so that the entire table is used
+                        Table size should be a prime number
+            Quadaratic Probing
+                Instead of using constant skip use a rehash that increments by a number like 1,3,5,7 etc. 
+                This will lead to a skip of successive perfect squares
+        Chaining/Closed Addressing
+            Allow items to be listed in same location
+            Hash function generates the slot
+    MAP ADT
+        AKA DICTIONARY
+        Operations                  Function
+        put(key, val)               Add to map
+        get(key)                    Get value
+        del                         Delete ket value pair
+        len()                       Get number of key-value pairs
+        in                          True or false if key is in map
+
+    Uses two lists to create HashTable, on called slots and one called data
+    Size needs to be a prime number to help with collision resolution
+
+    hash_function --> implements remainder method
+    put --> assumes there will eventually be an empty slot
+    get --> computes hash then checks to see if it is in slot if not uses rehash to locate other possibilities...if you return to original then break
+    __setitem__  and __getitem__ overloads the [] to allow access using the []
+
+    Use of a hash table is the load factor (lambda) -- large lambda is filled table small means more collisions
+    Number of comparisions with linear probing and open addressing = .5 (1 + 1/(1- lambda))
+    Number for chaining (closed addressing) 1 + lambda/2
+
+
+
+SORTING 
+    
+    Bubble Sort
+        Compares an item to the next item in the list, if the item is greater than the next swap then does the same for a list of size n-1
+        SWAP in python!!!!
+            Allows simulataneous assignment
+            a, b = b, a results in two assignment statements being done at the same time
+        O(n^2) .. most inefficient sorting method becuase it exchanges items before the final location is known
+        Can also have passes with no exchanges
+        Can make lots of exchanges per pass soooo it's inefficient
+    
+    Selection Sort
+        One exchange per pass..finds largest value remaining in list then places it in the correct location, each time the list shrinks by 1 to 
+        Outside loop goes backwards, inside loop goes forward
+        Less exchanges than Bubble Sort so it executes faster than the bubble sort
+
+    Insertion Sort
+        Always maintains a sorted sublist in the lower portions of the list then each new item is inserted back so the sorted list is one item larger
+        -Starts at item one, goes to next item and checks it against one then exchanges if need be, then continues to do so down the list for sublists of every increasing size
+        --shifts everything in list over to make room for new item so its an insertion/shift rather than an exhange
+        -- assumes list of one item is already sorted
+        --each pass it compares each item against those already sorted tgen shifts the greater items to the right
+        ---> A Shift operation requires a third of the processing work of an exchange since only one assignment is performed. 
+        ---INSERTION SORT HAS VERY GOOD PERFORMANCE
+
+    Shell Sort
+        AKA: The diminishing increment sort
+        Improves insertion sort by breaking the original list into a number of smaller sublists eeach sorted with an insertion sort, finishes with a final insertion sort. This lowers the number of shifting operations needed to put the list in its final order
+        --Increments are chosen each pass and we choose elements that are a certain distance apart
+        -- reduce value of increment until we reach the last pass when the gap is one
+        -- so first gap could be floor(n/2) and second could be floor(n/4) etc 
+
+DIVIDE AND CONQUER SORT ALGORITHMS
+    Merge Sort
+        Continually splits list in half, if list is empty or 1 item it is sorted. Once sorted merge is performed on the two sorted halves
+        1. Base Case = list is 0 or 1 item
+        2. Find mid using mid = floor(length)/2
+        3. use "slice" operation to extract halves left = [:mid] right = [mid:]
+        4. Merge halves together by placing the smaller item back into the original list
+        Divide list log n times then each item is processed and placed back in the list n times to give O(n log n) time but only if we remove the slice operator which is O(k) by just sending the list and the beginning and ending indices
+        Merge sort requires lots of spcae because it needs two lists
+        
+    Quick Sort
+        Doesn't use additional storage like merge sort
+        1. Select pivot value
+        2. Partition list at split point and then move items to the appropriate side of the list either above or below the split point based on whether they are greater than or less than
+        3. increment the left side (starting at pos 0) until you find value greater than pivot
+        4. decrement the right side (starting at pos n-1) until you find value less than pivot
+        5. swap
+        6. When right mark is less than < left mark stop and set new pivot points as right = split point
+        If pivot is in the middle it is O(n log n) else it could be O(n^2) with an unfavorable pivot
+        Median of Three - Take first last and middle then take the median of the three as the pivot value
+
+TREES AND TREE ALGORITHMS
+    Tree Properties
+        1. Root at top leaves at the bottom
+        2. All children of one node are independent of the children of another node
+    Examples:
+        Taxonomy
+        Unix File System
+            /
+            dev/
+            etc/ -- cups/ httpd/ init.d/ postPx/
+            sbin/
+            tmp/
+            users/
+            usr/ -- bin/ lib/ local/
+            var/ -- log/ spool/ yp/
+        Web Page
+            html -
+                head
+                    meta
+                    title
+                body
+                    h1
+                    ul
+                        li
+                        li
+                    h2
+                        a
+    Vocab and Definitions
+        Node - can have a key and a payload
+        Edge - connects two nodes, every node is connected by exactly one incoming edge from another node
+        Root - has no incoming nodes
+        Path - ordered list of nodes that are connected by edges
+        Children - set of nodes that have incoming edges from the same node are children
+        Parent - node with outoging edges
+        Sibling - Children of the same parent
+        Subtree - set of nodes and edges comprised of parent and all descendents of that parent
+        Leaf Node - Node with no children
+        Level - Number of edges on the path from the root to n...root is 0
+        Height - maximum level of any node in the tree
+
+        Definition One - a tree is a set of nodes and a set of edges that connect pairs of nodes
+            -- One node is the root
+            -- Every node except the root is connected by an edge from exactly one other node p where p is the parent
+            -- a unique path traverses from the root to each node
+            -- if each node in the tree has a max of two children then it is a binary tree
+        Defintion Two - a tree is either empty or consists of a root and zero or more subtrees, each of which is a tree. The root of each subtree is connected to the root of the parent tree by an edge
+
+        Operations                  Function
+            get_left_child()        returns tree corresponding to left node of current
+            get_right_child()       returns tree corresponding to right node of current
+            set_root_val()          stores object in paramater val of current node
+            get_root_val()          return object stored in current node
+            insert_left(val)        creates new binary tree and installs as left child
+            insert_right(val)       creates new binary tree and installs as right child
+
+        Implementations:
+            List of lists
+                Root is at 0 then left and right subtrees are at 1 and 2
+                A subtree that is a root and two empty lists is a leaf
+                def binary_tree(r):
+                    return [r,[][]]
+                Basically a root and two empty lists
+            Nodes and references
+                Attributes left and right are references to other instances of the Binary Tree class
+
+
