@@ -1,0 +1,42 @@
+CHAPTER 10 CASE STUDY 1: UNIX, LINUX AND ANDROID
+    Other Variations of UNIX
+        AIX
+        FreeBSD
+        HP-UX
+        SCO UNIX
+        System V
+        Solaris
+    Was pet project of Ken Thompson
+    UNICS - (Uniplexed Information and Computing Service)
+10.2 LINUX OVERVIEW
+    -Principle of least surprise: Let everything be simple, elegant and consistent
+    -Every program should do just one thing and do it well
+    -Avoid useless redundancy
+    10.2.2 Interfaces to Linux
+        User Interface --> Library Interface --> System Call Interface
+        Users--> Standard Utility Programs(shell, editors) --> Standard Library (open, close, read, write, fork) --> Linux OS (process management, memory management, I/O) --> Hardware (CPU, memory)
+        |---------------------User MODE-------------------------------------------------------------------------|---------------------------Kernel Mode-------------------|
+
+       - SYSTEM CALLS
+            - READ, WRITE, OPEN, CLOSE, FORK etc
+            - Programs make system cals by putting arguments in registers or on the stack and issuing trap instructions to switch from user to kernel mode
+            - There is no way to write a TRAP instruction in C but a library is provided with one procedure per system call
+            - Procedure are written in assembly but can be called from C
+                - each first puts its arguments in the proper place then executes the trap instruction
+            - The library interface NOT the system call interface is specified by POSIX 
+            - POSIX = operating system standards 1003.2
+        - Library Calls
+            - command processor (shell), compilers, editors, text-processors and file manipulation utilities
+        - User interface
+            - Similar to the first GUIs with an added Mouse oriented keyboard interface rather than keyboard oriented
+            - Popular Desktop Enviroments for Linux
+                - GNOME (GNU Network Object Model Enviroment)
+                - KDE (K Desktop Enviroment)
+            - GUIs supported by X Windowing System or X11 or X
+                - Defines communication and display protocols for manipulating windows on bitmap displays
+                - X Server controls devices like keyboard, mouse and screen
+                - X redirects input to or accepts output from client program
+                - Can be started via command line, but is typically started during the boot process by a display manager
+                - xterm = terminal emulator 
+    10.2.3 THE SHELL
+        

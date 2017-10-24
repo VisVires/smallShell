@@ -555,5 +555,27 @@ Binary Tree Applications
                 2. if the current token is a binary operator set root of current node to operator, add a new node as the right child and descend right
                 3. If token is a number, set root to number and return to the parent
                 4. if current token is a right paranthesis ')' go to parent of current node
+                To do this we need to track the parent node. To do that we can use a Stack() 
+                    If we are moving to the child just push the current node onto the stack and move to the child. Then when we need the parent just pop it off
+                Value Error if we get a token we don't recognize
         To evaluate the expression stored in the tree (like a word expression)
         To recover the original mathematical expression from the tree
+    Tree Order Traversals
+        - preorder - visit root node first then recursively do a preorder traversal of the left tree then the right tree
+            - two ways to implement...as external function check if tree exists then get its left and right child
+                - as internal check if left child exists to traversal of left, then check if right and do traversal of right
+            - better to do it as a external function because you rarely want to just traverse the tree
+        - inorder - recursively do an inorder traversal on the left tree, visit the root node then do a recursive inorder traversal of the right tree
+            - great at getting the parse tree back without parenthesis
+        - postorder - recursively do an postorder traversal of the left subtree and the right subtree followed by a visit to the root
+            - great for the evaluation of the parse tree
+    Binary Search Trees
+        Operations                          Function
+            put(key, val)                   add a new key value pair to the map, if key is already in the map.. replace old with new 
+            get(key)                        given a key return the value stored or None
+            del                             Delete key-value pair from the map using a statement of the form del map[key]
+            del map[key]                 
+            in                              True for a statement key in map, if key is in the map
+
+        Search Tree Implementation
+            
