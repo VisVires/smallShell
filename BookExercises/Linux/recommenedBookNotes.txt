@@ -39,4 +39,266 @@ CHAPTER 10 CASE STUDY 1: UNIX, LINUX AND ANDROID
                 - Can be started via command line, but is typically started during the boot process by a display manager
                 - xterm = terminal emulator 
     10.2.3 THE SHELL
-        
+        Command line interface
+        - when a user types a command line
+            -Shell extracts first word
+            - assumes word is a program
+            - searches for program
+            - runs programs
+            - suspends itself until the program terminates
+        - flags - optional value
+        - magic characters or wildcards
+            - * = all possible strings
+            - ? = matches any one character
+            - [ape]* = matches all files beginning in 'a' 'p' or 'e'
+        - When it opens shell automatically has access to a file called Standard Input, Standard Output and Standard Error
+        - CTRL-D = end of file
+        < - redirect standard in
+        > - redirect standard out
+        - Filter = program that reads from stdin and writes to stdout
+        - pipe symbol 
+        - Pipeline - collection of commands connected by pipe symbols
+        - To run a process in the background follow it's command with an &
+        - Files containing shell commands are called shell scripts
+    10.2.4 LINUX UTILITY PROGRAMS
+        Six Categories
+        1. File and Directory Manipulation Controls
+            cp
+            mv
+            mkdir
+            rm
+            chmod
+            rmdir
+            cat
+            ls
+        2. Filters 
+            grep
+            sort
+            head
+            tail
+            cut 
+            paste
+            od, convert binary input to ASCII text in octal, decimal or hexadecimal
+            tr, character translation (like from lower to upper case)
+            pr, format output for printer
+        3. Program Development Tools, such as editors and compilers
+            gcc, calls the C compilier
+            ar, collects library procedures into archive files
+            make, used to maintain large programs whose source code consists of multiple files
+    10.2.5 Kernel Structure
+        Structures
+        Kernel sits on hardware and enables interactions with I/O, Memory and conrols CPU access
+            SYSTEM CALLS -- All systems calls come here causing a trap which switches the execution from user to protected kernel mode then passes control to the I/O., Process or Memory Managment
+                I/O Component - all components responisble for interacting with devices, performing network and I/O operations
+                    -Virtual File System --- HIGHEST LEVEL 
+                        -Terminals 
+                            -- character device drivers (lowest level)
+                                - Seeks and Random Access not allowed
+                                    -Can be used to get every keystroke
+                                        -tty (Raw Terminal I/O)
+                                    -Or can be line oriented
+                                        - users must enter whole line before sending it to program
+                        -Sockets--Network Protocols
+                            --Network Device Drivers (lowest level) - (technically character devices)
+                                - Most linux systems contain ful functionality of a hardware router within kernel
+                                - Above hardware is IP, TCP, Application layer protocols (with sockets(Top Layer))
+                                - allows for programs to create sockets for particular networks and protocols
+                                - Gets back a fd for each socket to use later
+                        -File Systems--
+                            Linux has multiple file systems coexisting
+                            Generic Block Layer
+                                Provides an abstraction used by all those file systems to hide architectural differences in hardware devices
+                                --I/O Scheduler
+                                    Responsible for ordering and issuing disk-operation requests to conserve wasteful disk head movement
+                                    --Block Device Drivers (lowest level) 
+                                        - Seeks and Random Access Allowed
+                Memory Management Component
+                - Maintains virtual to physical mappings, maintains a cache of recently accessed pages and implements page-replacement and on-debmand bringing in new pages of needed code and data into memory
+                    - Virtual Memory
+                    - Paging page replacement
+                    - Page Cache
+                Process Management Component
+                - Creates and terminates processes
+                    - Signal Handling
+                    - Process / Thread creation and Termination
+                    - CPU Scheduling
+            INTERRUPTS
+                - Primary way for interacting with devices
+            DISPATCHER
+                - Occurs when the interrupt happens
+                - Stops the running process, saves its state in the kernel, starts the correct driver
+        4. Text Processing
+        5. System Administration
+        6. Miscellaneous
+
+
+10.3 PROCESSES IN LINUX
+
+10.3.1 Fundamentals
+    - Each process runs a single progra and has a single thread of control
+    - Daemon - background process
+    - cron daemon - wakes up once per minute to check if there is work ti di
+    Process Creations
+        - fork system call creates exact copy
+        - parent and child
+        - each have their own memory images
+        - if parent or child changes any variables they wont be visible to the child and vice versa
+        - Fork system call returns a 0 to the child and the child's PID to the parent..both check the return value then act
+        - getpid = system call that provides childs PID to child
+    - Processes communicate via pipes
+        - when a process tries to read from an empty pipe it is blocked until data is available
+    - Processes also communicate via software interrupts or signals
+        - When signal arrives control goes to the handler, when handler finishes control goes back
+        - A process can only send signals to members of its process group
+            Process group - parent and ancestors, siblings and children
+            - A process can send a signal to all members with a single system call
+
+
+10.3.2 Process Managment System Calls in Linux
+    After fork and the return of the child PID to the parent waitpid system call occurs
+    --waitpid system call --
+        - three parameters
+            1. allows the caller to wait for a specific child, if it is -1 any child will do
+            2. Address of a variable that will be set to the child's exit status
+            3. Determines whether the caller blocks or returns if no child is already terminated
+    --execve system call --
+        - three parameters
+            1. name of the file to be executed
+            2. a pointer to the argument array
+            3. a pointer to the enviroment array
+        -main(argc, argv, envp)
+            - argc = count of cl items
+            - argv = pointer to array
+            - envp = pointer to env array
+    -- exit() --
+        - if child exits and parent has not waited then zombie
+    -- alarm(seconds) --
+        a process may need to do something after a specific time period at which point a sig alarm is used
+        Only one alarm can be run at a time
+    -- pause() -- 
+        Only call with alarm set
+        Suspends process until next signal which is done by the alarm
+
+    -- PROCESS SYSTEM CALLS --
+    pid = fork() -- create a child process identical to parent
+    pid = waitpid(pid, &statloc, opts) -- wait for a child to terminate
+    s = execve(name, argv, envp) -- replace a process' core image
+    exit(status) -- terminate process execution and return status
+    s= sigaction(sigm &act, envp), define action to take on signals
+    s= sigreturn(& context), return from a signal
+    s= sigprocmask(how, &set, &old), examine or change the signal mask
+    s= sigpending(set), get the set of blocked signals
+    s= sigsuspend(sigmask), replace the signal mask and suspend the process
+    s= kill(pid, sig), send a signal to the process
+    residual = alarm(seconds), set the alarm clock
+    s= pause(), suspend the caller until the next signal
+
+10.3.3 IMPLEMENTATION OF PROCESSES AND THREADS IN LINUX
+    - Kernel represents processes as tasks via task_struct
+    - A process descriptor of type task_struct is resident in memory at all times
+     -- task_struct contains--
+        - info needed for the kernel's managment of all processes
+            - scheduling parameters
+            - lists of open file descriptors etc
+        - descriptor and memory for the kernel mode stack for the process are created upon process creation
+    - kernel organizes all processes in a doubly linked list of task structures
+    - PID is mapped to address of the TASK STRUCTURE for immediate access
+    - TASK STRUCTURES -
+        - contain pointers to other DS or segments like those containing open files
+        - some segments related to user-level stucture (can be swapped or paged out to preserve memory)
+    - INFORMATION IN PROCESS DESCRIPTOR -
+        1. Scheduling parameters - niceness CPU time consumed, time sleeping
+        2. Memory Image - pointers to text, data and stack segments or page tables, if text is shared it points to shared text table
+        3. Signals - masks showing which signals are being ignored, which are being caught, which are blocked etc.
+        4. Machine Registers - when trap to kernel, machine registers are saved here
+        5. System call state - info about current system call, includes parameters and results
+        6. File Descriptor Table - fd is used as an index to locate in-core data structure (inode)
+        7. Accounting - pointer to a table that tracks user and system CPU time by process, some systems impose limits
+        8. Kernel Stack - fixed stack for use by the kernel part of the process
+        9. Misc - current state, event being waited for, time until alarm, PID, PID or parent, user and group id
+
+
+    PROCESS CREATION IN LINUX
+        0. fork syste call is executed
+        .5 calling process traps to the kernel and creates task structure and other data stuctures like Kernel mode stack and a thread_info structure
+        1. new process descriptor and user area are created for the child process and filled in by parent
+        1.2 Linux looks for an available PID and updates PID hash-table entry to point to new task structure (process descriptors may be chained)
+        2. Child is given a PID
+        3. Child memory map is set up
+            -- childs page tables point to parents as read only.. 
+            -- if a write is attempted  then kernel allocates a new copy so no extra memory taken
+            -- called COPY ON WRITE
+        4. Child is given shared access to parent's files
+
+        5. Childs registers are set up and it is ready to run
+        6. Code running in child does an exec() system call giving command name
+        7. kernel finds and verifies the executable file
+        8 . Kernel copies the arguments and enviroment string and release the old address space and its page tables
+        9. new address space is created and filled in
+            1. new page tables set up to indicate no pages are in memory except for a stack page
+            2. A page fault will occur which will cause the first page of code to be paged in from the executable file
+            3. Args and enviromental strings copied to new stack
+            4. signals reset
+            5. registers initialized to all zeros
+ 
+LS COMMAND ON PAGE 743!!!
+
+Threads in linux
+- Classically when a new thread was created the original threads and the new one shared everything but the registers
+    - specifically
+        - fd for open files
+        - signal handlers
+        - alarms
+        - other global properties were per process, not per thread
+-Clone system call - made it possible for for each aspect to be process or thread specific
+    pid = clone(function, stack_ptr, sharing_flags, arg)
+    - creates new thread in current or new process
+        - if current it shares address space and each write is available to all other threads in the process
+        - if address space not shared new thread gets exact copy of address space but new writes not visible
+    - new thread gets its own private stack initialized to stack_ptr
+    - new thread begins executing at function with arg as its only parameter
+    - sharing flags parameter
+        - determines whether the new thread copies some data stucutre or shares it with the calling thread
+- A linux program that takes advantage of this is no longer portable to UNIX
+- UNIX means 1 PID per process regardless of threading. Linux has a TID
+    - if precess is started that shares nothing with its creator then PID is set to a new value, otherwise the task gets a new TID but inherits the PID...so all threads has same PID as first
+
+
+10.3.4 Scheduling in Linux
+    Linux threads are Kernel Threads so scheduling based on threads NOT processes
+
+    Classes of Threads
+        1. Real - time FIFO
+            - highest priority
+        2. Real time round robin
+            - have time quanta associated with them...so each is run for its quantum
+        3. Time sharing
+   -- nice system call --
+    Better than normal service is -1 to -20
+
+   --runqueue - data structure used by the scheduler to track all runnable tasks in the system
+   O(1) Scheduler - able to perform task managment operations in constant time independent of total number of tasks on system
+        -Two arrays = active and expired
+        - selects task from the highest priority list in active 
+            -if quantum expires move to expired
+            - if blocked via I/O event - placed back in active, timeslice decremented then placed in expired
+            - when no tasks in active, swap pointers so expired become active
+    -Dynamic Priority 
+        1) reward interactive threads
+        2) Punish CPU hogs
+    - The heuristics used to determine interactivity of a task and priority level subsequently were complex and imperfect which caused poor performance for interactive tasks
+
+Completely Fair Scheduler (CFS) - default scheduler for non-real time tasks
+    - uses red/black tree as the runqueue data structure
+        - tasks ordered based on time they spend running on the CPU
+        - CFS schedules task with lowest runtime, typically leftmost node
+        - periodically checks against current leftmost node
+        - if more than the task will be placed in appropriate place in tree and CPU will be given the new leftmost node
+        - To account for niceness CFS changes the virtual time passes so lower priority tasks have time run quicker so they are reinserted sooner
+        - selecting a node is done in constant time and inserting a task is done in O(log n) time
+-->Scheduler only considers runnable tasks
+-->Nonrunnable or waiting tasks are places in the waitqueue
+    - a waitqueue is associated with each event tasks may wait on
+
+10.3.5 BOOTING LINUX
+

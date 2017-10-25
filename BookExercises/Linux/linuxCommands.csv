@@ -102,10 +102,16 @@ ps, output snapshot of current processes
 ps a , list all processes with a terminal (tty)
 ps ax , list all processes 
 ps aux , list all processes under current user
+SIGABRT, sent to abort a process and force a core dump
+SIGALARM, the alarm clock has gone off
+SIGFPE, a floating point error has occured (like division by 0)
+SIGILL, user has hit DEL key to interrupt the process
+SIGQUIT, user has hit the key requesting a core dump
+SIGPIPE, a process has written to a pipe with no readers
 SIGHUP, Hang up signal
 SIGKILL, Kill signal
 SIGINT, Interrupt signal
-SIGSEGV, segmentation fault signal
+SIGSEGV, segmentation fault signal invalid memory address
 SIGTERM, Software termination signal
 SIGSTOP, Stop signal
 kill [PID] , calls sigterm to kill a process
