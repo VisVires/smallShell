@@ -301,4 +301,34 @@ Completely Fair Scheduler (CFS) - default scheduler for non-real time tasks
     - a waitqueue is associated with each event tasks may wait on
 
 10.3.5 BOOTING LINUX
+    1. BIOS perform Power On Self Test (POST)
+    2. First sector of the boot disk MBR (Master Boot Record) is read into a fixed memory location and executed
+        2.1 Contains a small 512 byte program called boot from the boot device
+        2.2 boot program copies itself to a fixed high memory space to free up low memory space for the OS
+    3. boot opens the bootloader or GRUB
+    4. boot reads in th eoperating system kernel and reads into it
+    5. The kernel:
+        5.1 sets up the kernel stacks
+        5.2 identifies the CPU type
+        5.3 Calculates amount of RAM
+        5.4 Disabes interrupts
+        5.5 Enables the MMU 
+        5.6 Calls the C-Language main procedure to start the main part of the program
+    6. Kernel data structures are allocated
+        6.1 Like the page cache and page data structures...each depend on amount of RAM available
+    7. System begins autoconfiguration based on I/O devices and other devices it does this with dynamic loading of devices
+        7.1 Dynamic device loading is when a single binary is shipped with divergent configurations which automatically loads drivers it needs
+    8. Start init by setting up its stack then running it
+    9. Init checks flags to see if it is single or multiuser
+        9.1 If single user then it executes the shell and waits for the process to exit
+        9.2 If mulit user it executes system initialization shell script and does fsck, mounts additional file systems, starts the daemon processes
+            9.2.1 reads etc/ttys (lists terminals and their processes)
+            9.2.2 For each terminal it forks off a copy of itself then executes getty
+                9.2.2.1 Getty sets the line speed then displays login: on the terminals screen to get users login
+                9.2.2.2 After login getty terminates by executing /bin/login
+    10. Login program asks for password, encrypts it and checks it against /etc/passwd and if correct replaces itself with the users shell
 
+
+10.4 MEMORY MANAGEMENT IN LINUX
+10.4.1 Fundamental Concepts
+    
