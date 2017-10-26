@@ -331,4 +331,172 @@ Completely Fair Scheduler (CFS) - default scheduler for non-real time tasks
 
 10.4 MEMORY MANAGEMENT IN LINUX
 10.4.1 Fundamental Concepts
-    
+    Each process has an address space with three parts:
+        Text
+            Contains machine instructions that make executable code
+            Produced by the compiler and assembled by translation
+            Normally read-only
+        Data
+            Contains storage for all variables, strings, arrays and other data
+            Two parts
+                Initialized - contains varibles and compiler constants
+                unitialized - known as BSS (block started symbol)
+            Data segment can change - can grow and shrink dynamically
+            System call brk allows a program to set its memory
+            Range of dynamically allocated memory areas in the process is called the heap
+        Stack
+            Starts at top of address space and grows down
+            If stack grows below then hardware fault occurs and the OS lowers the bottom of the stack by one page
+            At program start stack is not empty, it contains env variables and command line used to invoke it
+                So program can easily parse its arguments
+            Processes in Linux can access file data through memory mapped files
+                - makes it possible to map a file onto a portion of the processes address space which makes random access easier
+                - two or more processes can map in the same file at the same time -- writes to one are immediately available to the other
+10.4.2 MEMORY MANAGEMENT SYSTEM CALLS IN LINUX
+    POSIX does not specify system calls for memory management
+    Linux does however
+        s = bkr(addr) ... changes the data segment size
+        a = mmap(addr, len, prot, flags, fd, offset) ... maps a file in
+            addr is the addresss the file is mapped (must be a multiple of the page size)
+                if 0 the system determines the address
+            len is how many bytes to map
+            prot is the protection (read, write, execute)
+            flags -- private or sharable and whether adr is a requirement or hint
+            fd -- file descriptor
+            offset -- where in the file to begin mapping
+        s = unmap(addr, len) ... unmaps a file
+10.4.3 MEMORY MANAGEMENT IMPLEMENTATION
+    Each process gets 3 GB of virtual space  and 1 GB reserved for page tables and other kernel data on 32 bit machine
+    64 bit machines only up to 48 bits used for addressing meaning a limit of 256 TB for the size of addressable memory 64 - 48 = 16 split between kernel and user meaning 128 each per process
+        - address space created on exec system call
+    Physical Memory Management
+        Memory Zones:
+            1. ZONE_DMA and ZONE_DMA32
+                pages used for DMA from 0-16 MB on 32 bit 
+            2. ZONE_NORMAL
+                regularly mapped pages
+            3. ZONE_HIGHMEM
+                pages with high-memory addresses which are not permanently mapped anything above 896MB in x86 systems
+    Main Memory in Linux has three parts
+        First two - both pinned in memory and never paged out
+            Kernel - maintains a map of the main memory and use of physical memory in the system
+                keeps an array of page_descriptors call mem_map
+                    page_descriptor
+                        contains a pointer to the address space it belongs to
+                zone descriptors for each zone
+                node descriptor - used to differentiate between physical memory on different nodes
+            Memory Map
+    Memory Allocation Mechanisms
+        - Page Allocator - main mechanism for allocating new page frames of physical memory
+            - operates using the buddy algorithm
+            - buddy algorithm
+                - take contigous memoory of 64 pages, round up request to closest power of two (so 7 is 8 or 14 is 16), divide lower piece by powers of two until desired pages is reached
+        - slab allocator
+            - takes chuns using the buddy algorithm then carves slabs from them and manages the smaller units separately
+        - vmalloc
+            - used when memory needs to be allocated contiguosly in virtual space but not physical
+10.4.4 Paging In Linux
+    PAGE = main memory management unit
+        - alll memory-management components operate on a page granularity
+        - Basic Idea
+            - a process need not be entirely in memory to run
+        - Implemented by:
+            The Kernel
+            The Page Daemon - process 2 
+                - if it sees the list of free memory pages are two low it starts freeing pages
+        - at boot time init starts up a page daemon for each meory node and configures them to run periodically called:
+            kswapd
+                - checks to see if there are enough free pages available, if there is enough memory it goes back to sleep else:
+                    - reclaims up to 32 pages (limit is to control I/O pressure)
+                    - first tries easy pages then the harder ones
+                        - easy = discardable and unreferenced
+                            - pages with backing store which have not been referenced recently
+                            - user pages
+                    - if page is invalid, absent from memory, shared, locked in memory or being used for DMA it is skipped
+                - During reclaimation pages are oved between active and inactive and referenced or not
+                - if inactive flag and unreferenced flags are set then the pages are set for eviction
+       - pdflush
+            -set of background daemon threads
+            - either wake up to write back to disk very old pages or are explicitly awakened by the kernel when memory levels fall below a certain threshold
+
+10.5 INPUT/OUTPUT IN LINUX
+10.5.1 Fundamental Concepts
+    I/O Devices include disks, printers, networks
+    - Integrated into the file system as special files
+        -Two Types
+            - Block Files
+                - consists of a sequence of numbered blocks
+                - each block can be individually addressed and accessed
+            - Character Files
+                - used for devices that input or output a character stream
+                - Character special files can be customized to make system calls that are not permitted in block files
+        - Each special file has a device driver
+            - major device number - for identification
+            - if driver controls multiple devices like two disks of the same type then it has a minor device number too
+            - some drivers control multiple devices like /dev/tty controls the keyboard and the screen and is regarded as a signel device the terminal
+    - each devices is assigned a path name in /dev
+        - disk = /dev/hd1
+        - printer = /dev/lp
+        - network = /dev/net
+        - Can be treated like regular files so cp file /dev/lp will send that file to the printer if the user has access to /dev/lp
+10.5.2 Networking
+    Socket is the key -- analogous to mailboxes and telephone wall sockets in that they allows users to interface to the network
+        - Sockets can be created and destroyed dynamically
+        - Sockets supports a specific type of networking specified on creation:
+            1. Reliable connection-oriented byte stream
+                -- allows tow processes on different machines to establish a pipe between them
+            2. Reliable connection- oriented packet stream
+                -- preserves packet boundaries
+                    - Type 1 and Type 2 
+            3. Unreliable packet transmission
+        - Once socket have been created on both source and destination computers a connection can be established between them
+            - One makes a listen call
+            - The other makes a connect call
+10.5.3 INPUT/OUTPUT SYSTEM CALLS
+    - Used to either get or set the terminal speed ir setting and reading back all the special characters used for erasing characters and lines, interrupting processes etc.
+    SYSTEM CALLS:
+        s = cfsettospeed(&termios, speed) -- set output speed
+        s = cfsettispeed(&termios, speed) -- set input speed
+        s = cfgettospeed(&termios, speed) -- get output speed
+        s = cfgettispeed(&termios, speed) -- get input speed
+        s = tcssetattr(fd, opt, &termios) -- set the attributes
+        s = tcgetattr(fd, &termios) -- get the attributes
+
+10.5.4 Implementation of I/O in Linux
+    - Implemented by a collection of drivers
+    - Drivers function
+        -- isolate the rest of the system from the hardware
+    - When user accesses the special file
+        - 1. file system determines the major and minor device numbers and whether it is block or character
+        - 2. Major number used to index into one of two internal hash tables containing data structures for character or block devices
+        - 3. Structure contains pointers to perform procedures to call on the device like read, write, open etc. with minor device as parameter
+    - All character devices have the following functions/ procedures ...though not all use them
+        - Open
+        - Close
+        - Read
+        - Write
+        - loctl
+        - Other
+    - Driver split into two parts both part of the Kernel and run in Kernel mode
+        - Top half - runs in context of the caller and interfaces with the rest of linux
+        - Bottom half - runs in kernel and interfaces with the device
+    - I/O System separated into two components
+        - Handling of block special files
+            - cache between disk drivers and file system to prevent disk access that isn't needed
+            - if not in cache it is read from disk into cache
+            - when a write occurs it goes back to the cache not the disk
+            - I/O Scheduler
+                - reorders and bundles read/write requests to block devices
+        - Handling of Character special files
+
+10.5.5 Modules in Linux
+    Loadable modules were the solution to bridging the gap between devices and linux when linux moved from minicomputers to pcs
+    - When module is loaded:
+        1. It has to be relocated as it is loaded
+        2. System has to check to see if the resources the driver needs are available
+        3. Any interrupt vector must be set up
+        4. The appropriate driver switch table has to be updated to handle the new major device type
+        5. Driver is allowed to run to perform any device specific initialization
+
+
+10.6 THE LINUX FILE SYSTEM
