@@ -21,6 +21,7 @@ dhclient.leases, file that DHCP uses to keep track of leases across system reboo
 /etc, core system configuration directory..only holds config files and no binaries
 /etc/fstab, short for file system table and holds permanent list of mounted filesystems
 /etc/group, file with groups and different permissions
+/etc/exports, list of directories that can be exported automatically by an NFS server
 /etc/hosts.allow, file for host mappings that can be accessed
 /etc/hosts.deny, file for host mappings that cannot be accessed
 /etc/hosts, file that contains mappings of hostnames to IP addresses where hosts look first for IP address mappings
@@ -29,6 +30,7 @@ dhclient.leases, file that DHCP uses to keep track of leases across system reboo
 /etc/logrotate.d, log file utility that decides what logs to keep..how many..and how to compress
 /etc/network/interfaces, file that holds information for all network interfaces
 /etc/passwd, lists users including:..username..password..userID..groupID..GECOS field(csv comments)..users home dir and users shell..all users not just human modify with vipw
+/etc/rc, shell program that looks to mount remote directories to local VFS on boot
 /etc/resolv.conf, file used to map DNS servers for more effecient lookups..ulitmately made irrelevant due to improvements to DNS
 /etc/shadow, like passwd except it shows encrypted password and password info..means for authentication and pluggable authenticaion modules (PAM)
 /etc/sudoers, list of users who can run sudo

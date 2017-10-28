@@ -500,3 +500,281 @@ Completely Fair Scheduler (CFS) - default scheduler for non-real time tasks
 
 
 10.6 THE LINUX FILE SYSTEM
+Fundamental Concepts
+Linux File
+    -Sequence of 0 or more bytes containing arbitrary information
+    - Files grouped together in directories for convienience
+    - Major directories
+        - /bin -- Binary/Executable Files
+        - /dev -- special files for I/O devices
+        - /etc -- Misc system files
+        - /lib -- Libraries
+        - /usr -- user directories
+    - Absolute path - get file starting from root "/"
+    - Relative path = path from the working directory
+        - Solution to getting files that belong to a different user is by using a link
+    - Block special files
+        - /dev/hd1 can be used to read and write raw disk partitions without regard for the file system
+            - a seek to byte k followed by a read will begin reading from k on the partition ignoring i-node and file structure
+            - used for paging and swapping by programs that lay down file systems like "mkfs" or fix them "fsck"
+    - Character special files
+    - LINUX SOLUTION TO MULTIPLE DISKS
+        - Allow one disk to be mounted to anothers file system
+    ---Locking---
+        - Two or more processes using the same resource which may lead to race conditions
+        - POSIX allows processes to lock a single byte up to an entire file, Caller must specify the file, the starting block and the number of bytes
+        - Two Kinds of locks
+            - Shared Locks
+                - multiple shared locks can be placed on a file
+            - exclusive locks
+                - no other locks allowed
+
+10.6.2 FILE SYSTEM CALLS IN LINUX
+    fd = creat("abc", mode): -- creates a file and sets the protection mode
+    fd = open(file, how, ...) -- open file for reading, writing or both
+    s = close(fd) -- close an open file
+    n = read(fd, buffer, nbytes) -- read data from a file into a buffer
+    n = write(fd, buffer, nbytes) -- write data from a buffer into a file
+    position = lseek(fd, offset, whence) -- move the file pointe
+        - offset = file position
+        - whence = file position relatie to the beginning, current or end of the file
+        - just updates the current file position (which is a number in memory)
+    s = stat(name, &buf) -- get a file's status information
+    s = fstat(fd, &buf) -- get a file's status information
+    s = pipe(&fd[0]) -- create a pipe
+    s = fcntl(fd, cmd, ...) -- File locking and other operations
+    --- STAT SYSTEM CALL ---
+        Tracks:
+            File mode (regular, directory, special)
+            Size
+            Time of last modification
+        FIELDS RETURNED
+            - Device file is on
+            - I- node number (which file on the device)
+            - File Mode
+            - Number of links to the file
+            - id of file owner
+            - group file belongs to
+            - file size (in bytes)
+            - creation time
+            - time of last access
+            - time of last modification
+    --- FSTAT SYSTEM CALL --
+        Same as stat but operates on open file whose name may not be known rather than a path name
+    --- PIPE SYSTEM CALL ---
+        used to create shell pipelines..creates pseudofile which buffers data between pipeline components and returns fds for both reading and writing to the buffer
+    --- FCNTL SYSTEM CALL ---
+        Locks and unlocks files
+        Apply shared or exclusive locks
+---MORE SYSTEM CALLS---
+    s = mkdir(path, mode) ..create new directory
+    s = rmdir(path)... remove a directory
+    s = link(oldpath, newpath) .. create a link to an existing file
+    s = unlink(path) .. unlink a file
+    s = chdir(path) .. change the working directory
+    dir = opendir(path) .. open a directory for reading
+    s = closedir(dir) .. close a directory
+    dirent = readdir(dir) ... read one directory entry
+    rewinddir(dir) .. rewind a directory so it can be reread
+    --- LINK ---
+        Creates new directory entry that points to an existing file
+        When last link is removed file is deleted
+    --- CHDIR ---
+        Changes the working directory
+    NO WAY FOR USERS TO WRITE IN A DIRECTORY
+    NO WAY FOR USERS TO SEEK A SPECIFIC FILE IN A DIRECTORY BUT REWINDDIR ALLOWS AN OPEN DIRECTORY TO BE READ FROM THE BEGINNING
+
+10.6.3 IMPLEMENTATION OF THE LINUX FILE SYSTEM
+LINUX VIRTUAL FILE SYSTEM LAYER
+    Defines a set of basc file-system abstractions and the operations which are allowed on these abstractions
+    Four Main File System Data Structures supported by VFS
+        - Superblock -- contains critical info about layout - specific file system -- destruction will render fs unreadable
+            - read_inode, sync_fs
+        - Dentry -- Directory enrty, single component of path -- created by system on the fly -- cached in dentry_cache
+            - create, link
+        - Inodes -- index nodes describe one specific file..directories and devices also have inodes maintained on physical disk
+            - d_compare, d_delete
+        - File -- In-memory representation of the open file..created in response to open system call..supports read, wrtie, sendfile, lock etc
+            - read, write
+    
+    Elements of the OPERATIONS data structures for each of the four are pointers to functions in the underlying file system
+    EXTENDED FILES SYSTEMS
+        ext2
+            Disk Partition Structure
+                Block 0 - boot info
+                Block 1 - superblock (info about layout including number of inodes, disk blocks and start of the list of free blocks)
+                Block 2 - Group Descriptor - contains info about the location of the bitmaps, number of free blocks, inodes in the group, number of directories in the group
+                Block 3 - Block Bitmap - two used to keep track of free blocks and free i-nodes...each is one block long...this limits a block group to 8192 blocks and 8192 inodes with 1 kb blocks
+                Block 4 - Inode Bitmap - numbered from 1 to some maximum...128 bytes each and describes one file
+                Block 5 - Inodes - contains accounting info and enough info to locate all the disk blocks that hold the files data
+                Block 6 - Data blocks - all the files and directories are stored here ... if it spreads across more than one they don't need to be contiguous
+            Bitmaps are used to quick decisions regarding where to allocate new file system data
+            When a new file is made ext2 preallocates eight additional blocks for that file to minimize the change for fragmentation
+
+            Accessing a file
+                1. use open system call with file name
+                2. path name parsed to extract individual directories
+                3. if relative path -- lookup starts from pwd ...if absolute it locates root at inode 2
+                4. finds inode for the first directory in the process descriptor
+                5. Directory is either searched linearly or via the cache of recently accessed directories
+                6. A dentry object is entered in the dentry cache for each of the path components and is searcher for the next path element entry
+                7. Actual file inode is reached
+                8. If file inode is present the system extacts inode and uses it as an index into the inode table to locate and bring it into memory
+                9. System reads the file from the inode which contains first 12 blocks of the file 
+                    -- if file is longer than 12 blocks the inode contains the adressof a single indirect block
+                        - single indirect block contains disk address of more disk blocks
+                            - if block is 1 KB and address is 4 bytes a single block can hold 256 addresses (1024/4)
+                    -- double indirect block can be used too which can handle files up to 10 + 2 ^16 blocks
+                    -- triple indirect block can be used to handle files up to 16GB....8 KB block sizes can support files up to 64 TB
+
+            Directory file 
+                - Consists of four fixed length fields and one variable length field
+                    - Inode number
+                    - entry size (in bytes with padding after the name)
+                    - Type (F, D, etc)
+                    - File Name Length
+                    - FIle name
+                - padding from removed files can be used on other subsequent entries
+            
+            Open-file-description table
+                Table between file desciptor table and inode table for current file position...so if a process inherits a fd from a file it knows where to start
+                - Allows child and parent to share 
+                - Also gives unrelated files their own values
+    LINUX EXT4 FILE SYSTEM
+        Journaling File System
+            - Maintains a journal and writes out all file system operations in sequential order
+            - All changes to file system or metadata written out to prvent overheads of disk-head movement during random disk accesses
+            - Once commited journal entries are deleted
+        -Journal File
+            - circular buffer
+            - JBD (Journaling Block Device) used to perform journal reads/writes
+                - Supports three main data structures
+                    - log record
+                        - describes low level file system operation
+                        - related log entries are grouped in atomic operations
+                    - atomic operation handle
+                        - grouped log entries
+                    - transaction
+                        - collections of atomic operations that are stored consequtively
+                - JBD may be configured to track all changes or just metadata to reduce overhead.
+                    - reliability can be improved by checksumming
+        - Uses Extents
+            - represent contigous blocks of storage vs individual blocks like in ext2
+            - does not require metadata for each block of data
+            - reduces fragmentation for large files which means faster opertations and larger files
+            - Block size 1KB increases max file size for 16 GB to 16 TB and max file size to 1 EB
+    /PROC file system
+        - for every process a directory is created in /proc
+
+10.6.4 NFS: THE NETWORK FILE SYSTEM
+    Joins file systems on separate machines into one logical whole
+NFS ARCHITECTURE
+    Each NFS server exports one or more directories
+    List of exports is maintained in a file 
+        Normally etc/exports
+    Client can access these by mounting them then it becomes a part of the its directory hierarchy
+NFS PROTOCOLS
+    ------------Mounting------------------------------
+        - Client can send a path neame to a server and request permission to mount that somewhere in its hierarchy
+        - if path name is legal server returns a file handle
+            - file handle includes:
+                - file system type
+                - disk
+                - inode number of the directory
+                - security info
+        - reads and writes use the file handle
+        - When linux boots it runs /etc/rc script before going multiuser 
+            - This will mount remote file systems before allowing logins
+        - automounting
+            - allows a set of remote directories to be asscoiated with a local directory
+            - none are mounted when the client is booted only the first time a remote file is opened...at which time the OS sends a message to each server and the first to reply is mounted
+            - most often used for read-only file systems containing system binaries and other files that rarely change
+     -----------Directory and File Access -------------------
+        - Most system calls allowed except open and close
+            - not necessary to open a file before reading it or close it when done
+            - open call copies infrmation into internal system tables
+            - lookup call (NFS alternative to open) - does not copy information
+                - Advantage is server doesn't need to remember anything so no info is lost on a crash
+                - Keep servers stateless
+            - Locking can only be done on open files so locks cannot be used in the same way
+                - NFS uses separate method for locking
+NFS Implementation
+    3 - Layer Implementation
+        Top Layer - System Call Layer
+            open, read, close
+        Second Layer - Virtual File System Layer
+            - Maintains a table with one entry for each open file
+                - Has an entry virtual i-node or v-node for every open file
+                    - used to tell whether the file is local or remote
+    MOUNT, OPEN, READ PROCEDURE
+    1. system admin or /etc/rc calls the mount program specifying the remote directory
+    2. mount program parses the name and discovers the naes of the NFS server it is located on
+    3. It then contacts the machine asking for a file handle for the directory
+    4. if directory exists and is available the server returns a file handle for the directory
+    5. Makes a mount system call and passes the handle to the kernel
+    6. Kernel constructs a v-node for the directory and asks NFS to create a remote i-node (rnode) to hold the handle
+        -- each v-node either points to a point to an r-node or a pointer to an i-node
+        -- if it is remote the remote host and file handle can be located
+    7. When open system call is sent during the directory parsing it finds the directory where the file system is mounted and sees it is remote
+    8. Open call asks the NFS client to open the file
+    9. NFS client looks for the remaining portion of the path and gets back a file handle for it
+    10. Makes an r-node for the file reports back to VFS which puts in its tables a v-node for the file that points to the r-node
+    11. Caller is given a file descriptor for the remote file which is mapped onto the v-node by tables in the VFS layer
+    12. On read the file descriptor is used and the VFS layer locates the v-node which determines whether it is remote or local 
+    13. Then the VFS sends a message to the server containing the file handle the offset and the byte count....byte transfers are done in large 8192 Byte chunks
+    14. When request arrives at the server it is passed to the VFS layer which determines which local file system holds the file
+    15. VFS layer then makes call to the local file system to read and return the bytes which are passed back to the client
+
+    For writes a similar path is made, if a write system call is less than 8KB it waites until the chunk is full then sends it.
+    If a file is closed all of its data are sent immideately
+
+Caching
+    Cacheing is used to increase efficiency
+    Servers chache data to avoid disk accesses
+    Clients maintain two caches
+        - One for file attributes (inodes)
+        - One for file data
+    Problems with Caches
+        - simultaneus access solutions
+            - Each cache block is a timer 
+            - If a cached file is opened a message is sent to the server to find when it was last modified, if it occured after the local copy was cached the cache copy is discarded and the new copy fetched
+            - after the timer expires all modified blocks are sent to the server
+
+NFSv4
+    Stateful not stateless
+    - permits open operations to be invoked on remote files since the remote NFS server will maintain all file-system-related structures including the file pointer.
+    - read operations can be incrementally applied from the previous file pointer position
+
+10.7 SECURITY IN LINUX
+10.7.1 FUNDAMENTAL CONCEPTS
+    UID - user id -- owner is the person who created the file
+    GID - group id --system admin organizes people into groups
+        - potential accesses are read, write and execute
+        - 9 bits represent the access rights of a file
+        - represented as binary 111000000 == rwx------
+    Directories - x permissions are search permissions rather than execute permissions
+    SETUID bit - when a program with the SETUID bit is executed the effective UID for the process becomes the UID of the executable file owner instead of the UID of the user who tried to execute it
+    Many senstitive LINUX files are owned by root with the SETUID bit on...like the program that allows users to change their passwords "passwd"
+        - though the program has full access to the password file it will only change the caller's password and not permit any other access to the file
+    SETGID - same thing for groups --rarely used
+
+SECURITY SYSTEM CALLS IN LINUX
+    System Call                             Description
+    s = chmod(path, mode)                   Change file protection
+    s = access(path, mode)                  Check access using the real UID and GID
+    uid = getuid()                          Get the real UID
+    uid = geteuid()                         Get the effective UID
+    gid = getgid()                          Get the real GID
+    gid = getegid()                         Get the effective GID
+    s = chown(path, owner, group)           Change the owner and the group
+    s = setuid(uid)                         Set the UID
+    s = setgid(gid)                         Set the GID
+
+Implementation of Security in LINUX
+    when a user logs in the login program .... called login (SETUID root) asks for name and password.
+    - it hashes the password and looks for it in /etc/passwd via a hash match
+    - if it matches then it looks in /etc/passwd for the users preferred shell then uses setuid and setgid to give itself the users UID and GID
+    - opens the keyboard for standard input (fd0) standard output (fd1) and the screen for standard error (fd2) then executes the preferred shell and terminates itself
+    - when a process tries to open a file the system first checks the protection bits in the file's inode against the callers effective UID and GID...if valid it opens, else it returns -1
+
+THE END
