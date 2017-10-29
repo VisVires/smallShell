@@ -37,16 +37,16 @@ int main(int argc, char **argv){
     //cout << "Filename is: " << fileName << endl;
 
     myfile.open(fileName);
-    newfile.open("wrong.csv");
+    newfile.open("wrongRev.csv");
 
     while(myfile){
         string command, definition;
         getline(myfile, command, ',');
         getline(myfile, definition);
         cin.ignore(INT_MAX, '\n');
-        cout << definition << endl;
-        cin.get();
         cout << command << endl;
+        cin.get();
+        cout << definition << endl;
         string input;
         cin >> input;
         if (input == "n"){

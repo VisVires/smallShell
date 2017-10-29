@@ -1,0 +1,115 @@
+Load Balancing
+    Purpose:
+        Optimize Resource Usage
+        Achieve Maximum Throughput
+        Minimize Response Time
+    Common Load Balancing Techniques:
+        Round Robin
+        Stick Session (Session Affinity)
+        IP Address Affinity
+
+
+Sticky Sessions/Session Affinity Load Balancing
+    How are Sticky Sessions/ Session Affinity Load Balancing Done:
+        - Machine is associated with a session as soon as the session is created. 
+        - All requests are directed to that machine
+        - User data is only at one machine and load is shared
+ Issues with Sticky Session
+    - Client browser does not support cookies and load balancer will not be able to identify if a request belongs to a session...this causes strange behavior for the users who use no cookie based browsers
+    - In case one of the machine fails or goes down, the user info (server by that machine) will be lost and there will be no way to recover the user session
+
+
+IP Address Affinity
+    IP Address is associated with a computer node and all request from a client IP are served by that one node
+    - Useful if there is disabled cookies
+    Downside:
+        - If many users are behind a NATed IP address then all of them will end up using the same server node. This will cause uneven load on the server nodes
+
+Fail Over
+    Switching to another machine when one fails
+    Done by Load balancer
+        - Load Balancer is configured to fail over to another machine when ain machine fails
+        - Load Balancer support heart beat check
+            - Heart Beat Check
+                - Ensures target machine is responding if not then load balancer sends request to another machine or cluster
+ 
+
+
+Session replication
+    Three Types for Applications:
+        - Session persistence + saving the session to a shared file system (Persistence Manager + file store)
+        - Session persistence + saving the session to a shared database (Persistence manager + JDBCStore)
+        - In- Memory replication = creating an in memory copy of session in all the cluster nodes 
+
+
+
+CAP Theorem-
+    A distributed system cannot have all of the three following:
+        - Consistency - all nodes see the same data at the same time with concurrent updates
+        - Availablility - every request recieves a response about success or failure
+        - Partition Tolerance - system continues to operate despite arbitrary message loss or failure
+    Only two of three conditions can ever be guaranteed to be met by a system
+
+Sharding
+    - Architectural approach that distributes a single logical database system into a cluster of machines
+    - DOWNSIDES:
+        - requires application to be aware of the data location
+        - Any addition or deletion of nodes from the system will require some rebalance to be done in the system
+        - If you require lot of cross node join queries then your performance will be really bad. So knowing how the data will be used for querying becomes really important
+        - Wrong sharding logic may result in worse performance. Make sure you shard based on application need
+
+
+
+ACID Property
+    - Properties of relational database system
+        -Atomicity- This property guarantess that if one part of the transaction fails the enitre transaction will fail not affecting the DB
+        - Consistency - This property ensures that any transaction will bring the database from one valid state to another
+        - Isolation - property ensures that the concurrent execution of transactions results in a systems state that would be obtained if transaction were executed serially
+        - Durable - means that once a transaction has been committed, it will remain so, even in the event of power loss
+
+
+
+BASE Property
+    - Properties of NoSQL Databases
+        - Basically Available - indicates that the system is guaranteed to be available
+        - Soft State -indicates that the state of the system may change over tie, even without input. Due to the eventually consistent model
+        - Eventual Consistency - System will become consistent over time, given that the system doesn't receive input during that time
+
+
+Eventual Consistency
+    -Property of a system that ensures that any transaction will eventually bring the database from one valid state to another
+    - Means there can be intermediate states that are not consistent between nodes
+    - USEFUL
+        - Scenarios where absolute consistency is not critical
+    - DOWNSIDES
+        - Cannot be used for use cases where absolute/strict consistencty is required
+
+
+Shared Nothing Architecture
+    - Means no resources are shared between nodes (file storage, memory)
+    - Nodes are able to work independently without depending on each other for any work
+    - Failure on one node only affects users of the node..others continue to work
+    - Highly scalable to avoid existence of a single bottleneck
+    - Linear Scalablilty
+    _ Can scale infinitely simply by adding nodes in the form of inexpensive machines
+
+
+Updating Heavy Traffic Site
+    Before Deploying
+        - test new changes and ensure it works in test enviroment that is identical to production system
+        - Do automation test cases as much as possible
+        - Create automated sanity test script/smoke test that can be run on production
+        - Create scripts for all manual tasks avoiding any hand typing mistakes during deployment
+        - Test the script to make sure they work on a non-production enivorment
+        - Keep the build artifacts ready 
+        - Create a checklist of things to do on day of deployment
+        - Rehearse. Deploy on non-prod that is identical to prod
+    On Deploying
+        - Keep backup of current site/data to be able to rollback
+        - use sanity test cases before doing a lot of in depth testing
+
+Distributed Lock Manager (DLM) - Google's Chubby
+
+Memcached
+
+Multi-threading
