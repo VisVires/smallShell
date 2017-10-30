@@ -108,8 +108,89 @@ Updating Heavy Traffic Site
         - Keep backup of current site/data to be able to rollback
         - use sanity test cases before doing a lot of in depth testing
 
+
 Distributed Lock Manager (DLM) - Google's Chubby
+    -Chubby provides an interface like a distrubuted file system with advisory locks with a design emphasis on availability and reliability as opposed to high performance
+    - For use within a loosely coupled distributed system of large numbers of small machines connected by a high speed network
+    - Reliability and availabiity most important
+        - Throughput and storage capacity secondary
+    - Client interface is similar to that of a simple file system with whole-file reads and writes augmented with advisory locks and notification of various events like modification
+    - Chubby was built to help deal with the problem of electing a leader from among a set of otherwise equivalent servers
+
+
+    -Advantages over a client library (like Paxos)
+        - Developers do not plan for high availability in the way they would wish, a lock server makes it easier to maintain existing program structure and communication patterns
+            - One acquires lock to become master
+            - pass an additional integer with the write RPC and an if-statement to the file server to reject the write if acquisition count is lower than the current value
+        - Services that elect a primary need a means for advertising the results
+            - Chubby uses consistent client caching rather than time based caching
+        - A lock based interface is more familiar at least programmers think it is...it gives the illusion on synchronization
+        - Finally distributed consensus algorithms use quorums to make decisions so they use several replicas. Chubby uses 5....on a client system a single client can obtain a lock so the lock service reduces the number of servers needed for reliable client service ... called consesnus service
+
+- CHUBBY CELL STRUCTURE
+        - Small set of servers known as replicas
+        - They use distributed consensus protocol to elect a master for a period called a master lease
+        - replicas maintain copies of a simple db but the master initiates reads and writes of the database. replicas simply copy updates from the master sent using the concensus protocol
+        - write requests are propagated to all replicas and are acknowledged once it has reached most replicas
+        - Reads are satisfied by the master alone
+    - If there is a failure
+        - system selects a fresh machine from a free pool and starts the lock server bianry on it updates the DNS tables and replaces the IP of the failed machine with the new one.
+        - The master polls DNS and notices the change
+        - The master then updates the list of the cells members in the cell's database
+        - New replica obtains a copy of the database from a combination of backups then updates them based on that of the active replicas
+        - Once it has processed a request by the master the new replica is eligible to vote
+    - Chubby Clients Cache
+        - When file data is to be changed the master send invalidations for every client that may have cached it and the client flushes it
+        - Once the server has word that every client has invalidated its cache.
+        - It invalidates rather than updated because the client would need to get constant updates 
+
+
 
 Memcached
+    - general purpose dsitributed memory caching system.
+    - Provides large hash table distributed across multiple machines. 
+    - When table is full subsequent inserts cause older data to be purged in least recently used order. 
+    - Layer requests and additions into RAM before falling back on a slower backing store
+    - Architecture
+        - Client -server
+        - Servers maintan key- value associative array
+        - Clients populate it and query by key
+        - Clients access servers at port 11211
+        - Each client knows all servers 
+        - Servers don't know each other
+        - PROCESS
+            - If clients want to set or read a value it first computes the value of the hash to determine which server to use. (Gives Sharding and shared nothing architecture) 
+            - Server computes the hash of the key to determine where to store or read the corresponding value.
+            - Servers keep values in RAM until it runs out then it discards the oldest value
+
+
 
 Multi-threading
+    - Ability of a CPU or a single core to execute multiple processes or threads concurrently
+    - Different than multiprocessing because multi-threading the processes and threads share teh resources of single or multiple cores: The CPUs and the translation lookaside buffer
+    - Aim is to increase utilization by using thread level as well as instruction level parallelism.
+    
+    - ADVANATAGES:
+        - If a thread gets a lot of cache misses other threads can continue taking advantage of unused computing resources
+        - If a thread cannot use all the computing resources of the CPU, running another thread may prevent those resources from being idle
+        - If several threads work on the same set of data they can share their cache, leading to better cache usage or synchronization on its values
+    
+    - DISADVANTAGES
+        - Multiple threads can interfere with each other when using hardware resources so due to the excess resources needed to acommadate thread switching hardware single threads can be degraded
+        - Efficieincy varies ex: Intel Hyper-Threading claims 30% improvement and a program performing a loop of floating point operations ay have 100% whereas assembly language programs do not benefit and may see degraded performance
+        - Thread Scheduling 
+        - hardware support is morevisisble to software than multiprocessing meaning more changes needed to software
+
+    - TYPES
+        - Interleaved/ Temporal
+            - Coarse Grained Multithreading
+                - One thread runs until it is blocked by an event that would cause a stall then while waiting the processor would switch execution to another thred until the original was ready to run
+            - Interleaved Multithreading (Barrel Processor)
+                - aka fine-grained, time sliced, preemptive
+                - time slice given to each active thread is one CPU cycle
+            - Simulataneous Multithreading
+                - Most advanced kind
+                - Exploits parallelism available across multiple threads to decreas the waste associated with ununsed slots
+                - Temporal Multihtreading
+                - A superscalar processor can issue instructions from multiple threads every CPU cycle
+                - Additional Cost - each pipeline stage tacks the thread ID of each instruction being processed.

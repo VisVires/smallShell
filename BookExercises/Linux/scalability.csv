@@ -41,4 +41,9 @@ Soft State Property,property of NoSQL DB where the state may change over time ev
 Eventual Consistency, system will be consisten over time given that the system doesn't recieve input during that time
 Shared Nothing Architecture, Distributed computing approach in which each node is independent and self-sufficient and there is no single point of contention required across the system
 Linear Scalability, an appliction that scale just by adding more machines without changing the application code
-Distributed Lock Manager, runs in every machine in a cluster with identical copy of a cluster wide lock databse to provide software applications with a means to synch their shared resources
+Distributed Lock Manager, runs in every machine in a cluster with identical copy of a cluster wide lock databse to provide software applications with a means to synch their shared resource
+Course Grained Synchronization, use a simple lock to guard many object instances or even a whole subsystem of a program
+Deadlock, when two threads are trying to access a locked resource that the other is holding
+Remote Procedure Call (RPC), computer program that causes a procedure to execute in a different address space which is coded as if it were a normal (local) procedure call.
+Client Caching, keeps files in local cache memory of the workstation to reduce number of times the workstation needs to access the server
+
