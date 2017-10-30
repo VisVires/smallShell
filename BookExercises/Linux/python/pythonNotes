@@ -1,0 +1,581 @@
+LISTS
+    METHOD          USE             Explanation
+    append          l.append(item)
+    insert          l.insert(index ,item)
+    pop             l.pop()
+    pop             l.pop(index)
+    sort            l.sort()
+    l.reverse       l.reverse()
+    del             del l[index]
+    count           l.count(item)
+    remove          l.remove(item)
+
+
+LIST OPERATIONS BIG-O PYTHON
+Grow List                               Big-O
+    append                              O(1)    first
+    concatenate                         O(n)    last
+    list comprehension                  O(1) .. 2nd
+    range based assignment              O(1) .. fastest
+Pop
+    pop end                             O(1)
+    pop beginning                       O(n)    .. has to shift all elements
+    pop middle                          O(n)    .. has to shift all elements behind it
+Get
+    index[i]                            O(1)
+Set         
+    index(i)                            O(1)
+Insert
+    insert(i, item)                     O(n)
+Delete
+    del                                 O(n)
+Iteration                               O(n)
+contains(in)                            O(n)
+getSlice[x:y]                           O(k)
+del slice                               O(n)
+set slice                               O(n+k)
+reverse                                 O(n)
+concatenate                             O(n)
+sort                                    O(n log n)
+multiply                                O(nk)
+
+
+STRINGS
+    Lists are mutable Strings and Tuples are not
+        You can modify a list with by using indexing and assignment, which you can't do with a string 
+    
+    Method          Use             Explanation
+    center          s.center(w)
+    count           s.count(item)
+    ljust           s.ljust(w)
+    lower           s.lower()
+    rjust           s.rjust(w)
+    find            s.find(item)
+    split           s.split(char)
+
+SETS
+    Operators       Example
+        in          x.in(set)          
+        len         len(set)
+        |           set1 | set2     Retuerns all elements in both sets
+        &           set1 & set2     Returns all elements in both in set1 and 2
+        -           set1 - set 2    Returns all elements in set1 not in set2
+        <=          set1 <= set2    Are all elements of set1 in set 2
+
+        -Sets are heterogeneous, immutable python data objects, each item unique
+        - declared with curly braces rather than []
+
+    Method              Use                     Explanation
+        Union           set1.union(set2)        new set with all elements of both
+        intersection    set1.intersection(set2) new set with only common elements
+        difference      set1.difference(set2)   new set with only items in 1 and not 2
+        issubset        set1.issubset(set2)     if all elements are in 1 and not 2
+        add             set1.add(item)          add item to set
+        remove          set1.remove(item)       remove item from set
+        pop             set1.pop()              remove arbitrary element from set
+        clear           set1.clear              remove all elements
+
+
+DICTIONARY
+    Operators           Use
+    []                  d[key]
+    in                  key in d
+    del                 del d[key]
+    :                   key:value
+
+    - declared with curly braces
+    - comma delimited key:value pairs
+
+    Method              Use                     Explanation
+        keys            d.keys()                returns all keys
+        values          d.values()              returns all values
+        items           d.items()               returns key value pairs
+        get             d.get(key)              returns value associated with key or none
+        get             d.get(key, alt)         returns k or alt if key doesn't exist
+
+
+DICT OPERATIONS BIG-O PYTHON
+Copy                O(n)
+get item            O(1)
+set item            O(1)
+delete item         O(1)
+contains (in)       O(1)
+iteration           O(n)
+
+
+
+
+INPUT/OUTPUT
+
+userName = input("input prompt")
+    - input function will always be a string and user must convert it to determined type
+        user_radius = input("Enter radius")
+        radius = float(user_radius)
+
+    String Formatting
+    PRINT FUNCTION
+        - takes one or more arguments then outputs them using a single blank a default sep
+        - change sep by using sep="new sep" 
+        - each string ends in new line but can be changed using end="new end"
+
+    FORMATTED STRINGS
+        String formatting characters
+            Character           Output Format
+                d,i                 Integer
+                u                   unsigned int
+                f                   float m.fffff
+                e                   float as m.ffffe+/-x
+                E                   float as m.ffffE+/-x
+                g                   Use %e for exponents less than -4 or greater than +5 otherwise %f
+                c                   Single char
+                s                   String
+                %                   literal
+            Modifier        use         Description
+                number      %20d            put value in field of length 20
+                -           %-20d           left-justify in field of length 20
+                +           %+20d           right-justify in field of length 20
+                0           %020d           leading zero-fill in field length of 20
+                .           %20.2f          field length 2 with 2 chars to the right like "     4.00
+                (name)      %(name)d        get value using the name as the key
+        Example: print("%s is %d years old." % (name, age) can also be: 
+                 print(age, "is", age, "years old.")
+            Method
+                format()
+                
+CONTROL STRUCTURES
+
+while loop:
+    while condition:
+        action
+
+    while condition and not condition:
+        action
+for loop:
+    for item in list/string/tuple:
+        action
+
+    for item in range(num)
+        action
+if else:
+    if condition1:
+        action
+    else
+        action
+
+list comprehension
+    for x in range(1, 11):
+        sq_list.append(x*x) is equivalent to sq_list = [x * x for x in range(1,11)]
+
+    same for only odd values:
+    sq_list =  [x * x for x in range(1,11) if x % 2 != 0]
+    or
+    [ch.upper() for ch in 'comprehension' if ch not in'aeiou']
+
+Exceptions
+    if adverse condition:
+        raise RuntimeError("Error Message")
+    else:
+        action
+
+    try:
+        action with potentional adverse condition
+    except:
+        message outlining condition
+        alternate action?
+
+FUNCTION DEFINTIONS
+    def square(n):
+        return n ** 2
+
+ABSTRACT DATA TYPES
+    STACK
+        Operations                  Python Implementation     
+            s.is_empty()
+            s.push(item)            Append used to add to back rather than insert because O(1) vsO(n)
+            s.pop()                 Remove is from back rather than front because O(1) vs O(n)
+            s.peek()
+            s.size()
+
+        Example Problems:
+            Balanced Symbols "{[(" ")]}"
+            Coverting Decimal to Binary or Hexadecimal or Octal
+            infix, prefix and postfix expressions conversions
+    QUEUES
+        Operations                  Python Implementation
+            q.is_empty()
+            q.enqueue(item)         Uses insert rather than append so O(n)
+            q.size()
+            q.dequeue()             Uses pop so O(1)
+        Example Problems:
+            Hot Potato
+            The Josephus Problem
+            Printing Tasks          
+                Printer class keeps track if busy and of time
+                Task class gives random number of pages, time stamp, and wait time
+    DEQUES
+        Operations                  Python Implementation
+            d.is_empty()
+            d.add_rear(item)        O(n)    rear is at position 0, so it uses insert
+            d.add_front(item)       O(1)    last item so it uses append
+            d.size()    
+            d.remove_rear()         O(n)    d.pop(0) .. removes 1st item
+            d.remove_front()        O(1)    removes last item
+        Example Problems:
+            Palidrome Problem
+                remove and compare first and last and if they are equal continue until size = 1 or 0
+
+LISTS
+    UNORDERED LIST
+        Operations                  Python Implementation
+            add(item)               O(1) .. adds item to front of list and changes head to new item
+            remove(item)            O(n)
+            search(item)            O(n)
+            is_empty()              O(1)
+            size()                  O(n)        uses traversal
+            append(item)            O(1)
+            index(item)             O(n)
+            insert(pos, item)       O(n)
+            pop()                   O(1)
+            pop(pos)                O(n)        uses traversal with current and previous nodes
+        Linked List
+            Node Class
+                class Node:
+                    def __init__(self, data)
+                        self.data = init_data
+                        self.next = None
+                    def get_data(self):
+                        return self.data
+                    def get_next(self):
+                        return self.next
+                    def set_data(self, new_data):
+                        self.data = new_data
+                    def set_next(self, new_next):
+                        self.next = new_next
+            None reference value will denote that there is no next
+    ORDERED LIST
+        Operations                  Python Implementation
+            add(item)               O(n) needs additional reference called previous two steps
+            remove(item)            O(n)
+            search(item)            O(n) ... but can stop earlier due to order
+            is_empty()              O(1)
+            size()                  O(n)
+            index(item)             O(n)
+            pop()                   O(1)
+            pop(pos)                O(n)
+
+
+RECURSION
+    Method of solving problems that involes breaking a problem down into smaller and smaller subproblems
+    Example Problems:
+        Calculating sum of a list of numbers
+            use lots of paranthesis to create an order of operations
+            
+            def list_sum(num_list):
+                #base case
+                if len(num_list) == 1:
+                    return num_list[0]
+                #recursive call
+                else:
+                    return num_list[0] + list_sum(num_list([1:])
+        Convert an Integer to a string in any base
+            Base Case: Reduce original number to a series of single digit numbers
+            Convert single digit number to a string using a lookup
+            Concatenate the single digit strings to form the final result
+        Function to take a string and return true if it is a palindrome
+
+    Solving a smaller problem until it can't get any smaller then piece together the solutions
+
+    THREE LAWS OF RECURSION
+        1. A recursive algorithm must have a base case
+        2. A recursive algorithm must change its state and move toward the base case
+        3. A recursive algorithm must call itself, recursively
+    
+    STACK FRAMES
+        When a function returns the return value is left on top of the stack for the calling function to access
+
+    VISUALISING RECURSION
+        Turtle Spiral Example
+        Fractal Tree
+            - something that looks the same at all levels of magnification
+            - builds a tree from right to left
+        Sierpinski Triangle
+            - large triangle with ever shrinking smaller triangles inside and a missing middle triangle
+        Tower of Hanoi
+            - can only move one disk at a time
+            - can never have a larger disk on top of a smaller one
+            - base case: one disk
+            - move tower of height - 1 to an intermediate pole using the final pole
+            - move remaining disk to final pole
+            - move tower of height - 1 from intermeidate to final using original pole
+        Maze Exploration
+            -Base Cases
+                - Turtle hits wall
+                - Turtle finds square already explored
+                - Turtle finds exit
+                - Turtle finds it cannot travel in all four directions
+SEARCHING AND SORTING
+    SEQUENTIAL SEARCH
+        O(n)
+    BINARY SEARCH 
+        O(log n)
+        Divide and Conquer Strategy
+            Divide the problem into smaller pieces, solve the smaller pieces then reassemble the problem
+        binary_search(a_list[:midpoint], item)
+        If it uses slice then it will not perfom in strict logarithmic time because slice is O(k)
+    HASHING
+        Hash Function
+            takes item in collection and returns and integer in the range of slot names
+            Collision/Clash
+                When two items need to be in the same slot
+        Perfect Hash Function
+            Every item has a unique slot
+            Not possible if an arbitrary collection of items
+            One way to do this is to have a increasing size so collisions are not possible
+                Not feasible with huge collections of items
+            Folding Method
+                Divide group into equal pieces(except the last piece) then add them together, some reverse every other piece then add.
+            Mid-Square Method
+                First Square the item tehn extract some portion of teh resulting digits
+                    Example 44:
+                        44^2 = 1936 then take 93 % 11 = 5
+            Character Based:
+                Sequence of Ordinal Values...so cat = 99 + 97 + 116
+                Can use character position as a weighing factor
+        Open - addressing
+            Try to find next open slot
+            Linear Probing - systematically looking for the next open spot
+            Need to use the same methods for finding items that you do hashing them
+                Clustering - items can become clustered in the table 
+                    Fix: Instead of linear probing, look at every other slot or every third (plus3)
+                    Also called rehashing
+                        new value = rehash(old value)
+                                   = (pos + 3)% table size
+                    Size of skip should be so that the entire table is used
+                        Table size should be a prime number
+            Quadaratic Probing
+                Instead of using constant skip use a rehash that increments by a number like 1,3,5,7 etc. 
+                This will lead to a skip of successive perfect squares
+        Chaining/Closed Addressing
+            Allow items to be listed in same location
+            Hash function generates the slot
+    MAP ADT
+        AKA DICTIONARY
+        Operations                  Function
+        put(key, val)               Add to map
+        get(key)                    Get value
+        del                         Delete ket value pair
+        len()                       Get number of key-value pairs
+        in                          True or false if key is in map
+
+    Uses two lists to create HashTable, on called slots and one called data
+    Size needs to be a prime number to help with collision resolution
+
+    hash_function --> implements remainder method
+    put --> assumes there will eventually be an empty slot
+    get --> computes hash then checks to see if it is in slot if not uses rehash to locate other possibilities...if you return to original then break
+    __setitem__  and __getitem__ overloads the [] to allow access using the []
+
+    Use of a hash table is the load factor (lambda) -- large lambda is filled table small means more collisions
+    Number of comparisions with linear probing and open addressing = .5 (1 + 1/(1- lambda))
+    Number for chaining (closed addressing) 1 + lambda/2
+
+
+
+SORTING 
+    
+    Bubble Sort
+        Compares an item to the next item in the list, if the item is greater than the next swap then does the same for a list of size n-1
+        SWAP in python!!!!
+            Allows simulataneous assignment
+            a, b = b, a results in two assignment statements being done at the same time
+        O(n^2) .. most inefficient sorting method becuase it exchanges items before the final location is known
+        Can also have passes with no exchanges
+        Can make lots of exchanges per pass soooo it's inefficient
+    
+    Selection Sort
+        One exchange per pass..finds largest value remaining in list then places it in the correct location, each time the list shrinks by 1 to 
+        Outside loop goes backwards, inside loop goes forward
+        Less exchanges than Bubble Sort so it executes faster than the bubble sort
+
+    Insertion Sort
+        Always maintains a sorted sublist in the lower portions of the list then each new item is inserted back so the sorted list is one item larger
+        -Starts at item one, goes to next item and checks it against one then exchanges if need be, then continues to do so down the list for sublists of every increasing size
+        --shifts everything in list over to make room for new item so its an insertion/shift rather than an exhange
+        -- assumes list of one item is already sorted
+        --each pass it compares each item against those already sorted tgen shifts the greater items to the right
+        ---> A Shift operation requires a third of the processing work of an exchange since only one assignment is performed. 
+        ---INSERTION SORT HAS VERY GOOD PERFORMANCE
+
+    Shell Sort
+        AKA: The diminishing increment sort
+        Improves insertion sort by breaking the original list into a number of smaller sublists eeach sorted with an insertion sort, finishes with a final insertion sort. This lowers the number of shifting operations needed to put the list in its final order
+        --Increments are chosen each pass and we choose elements that are a certain distance apart
+        -- reduce value of increment until we reach the last pass when the gap is one
+        -- so first gap could be floor(n/2) and second could be floor(n/4) etc 
+
+DIVIDE AND CONQUER SORT ALGORITHMS
+    Merge Sort
+        Continually splits list in half, if list is empty or 1 item it is sorted. Once sorted merge is performed on the two sorted halves
+        1. Base Case = list is 0 or 1 item
+        2. Find mid using mid = floor(length)/2
+        3. use "slice" operation to extract halves left = [:mid] right = [mid:]
+        4. Merge halves together by placing the smaller item back into the original list
+        Divide list log n times then each item is processed and placed back in the list n times to give O(n log n) time but only if we remove the slice operator which is O(k) by just sending the list and the beginning and ending indices
+        Merge sort requires lots of spcae because it needs two lists
+        
+    Quick Sort
+        Doesn't use additional storage like merge sort
+        1. Select pivot value
+        2. Partition list at split point and then move items to the appropriate side of the list either above or below the split point based on whether they are greater than or less than
+        3. increment the left side (starting at pos 0) until you find value greater than pivot
+        4. decrement the right side (starting at pos n-1) until you find value less than pivot
+        5. swap
+        6. When right mark is less than < left mark stop and set new pivot points as right = split point
+        If pivot is in the middle it is O(n log n) else it could be O(n^2) with an unfavorable pivot
+        Median of Three - Take first last and middle then take the median of the three as the pivot value
+
+TREES AND TREE ALGORITHMS
+    Tree Properties
+        1. Root at top leaves at the bottom
+        2. All children of one node are independent of the children of another node
+    Examples:
+        Taxonomy
+        Unix File System
+            /
+            dev/
+            etc/ -- cups/ httpd/ init.d/ postPx/
+            sbin/
+            tmp/
+            users/
+            usr/ -- bin/ lib/ local/
+            var/ -- log/ spool/ yp/
+        Web Page
+            html -
+                head
+                    meta
+                    title
+                body
+                    h1
+                    ul
+                        li
+                        li
+                    h2
+                        a
+    Vocab and Definitions
+        Node - can have a key and a payload
+        Edge - connects two nodes, every node is connected by exactly one incoming edge from another node
+        Root - has no incoming nodes
+        Path - ordered list of nodes that are connected by edges
+        Children - set of nodes that have incoming edges from the same node are children
+        Parent - node with outoging edges
+        Sibling - Children of the same parent
+        Subtree - set of nodes and edges comprised of parent and all descendents of that parent
+        Leaf Node - Node with no children
+        Level - Number of edges on the path from the root to n...root is 0
+        Height - maximum level of any node in the tree
+
+        Definition One - a tree is a set of nodes and a set of edges that connect pairs of nodes
+            -- One node is the root
+            -- Every node except the root is connected by an edge from exactly one other node p where p is the parent
+            -- a unique path traverses from the root to each node
+            -- if each node in the tree has a max of two children then it is a binary tree
+        Defintion Two - a tree is either empty or consists of a root and zero or more subtrees, each of which is a tree. The root of each subtree is connected to the root of the parent tree by an edge
+
+        Operations                  Function
+            get_left_child()        returns tree corresponding to left node of current
+            get_right_child()       returns tree corresponding to right node of current
+            set_root_val()          stores object in paramater val of current node
+            get_root_val()          return object stored in current node
+            insert_left(val)        creates new binary tree and installs as left child
+            insert_right(val)       creates new binary tree and installs as right child
+
+        Implementations:
+            List of lists
+                Root is at 0 then left and right subtrees are at 1 and 2
+                A subtree that is a root and two empty lists is a leaf
+                def binary_tree(r):
+                    return [r,[][]]
+                Basically a root and two empty lists
+            Nodes and references
+                Attributes left and right are references to other instances of the Binary Tree class
+                Insert Left
+                    - if no left_child insert node
+                    - if left_child insert the node and push the existing child down a level
+                    else:
+                        t = BinaryTree(new_node)
+                        t.left_child = self.left_child
+                        self.left_child = t
+    Priority Queues and Binary Heaps
+        Queue ordered by Priority
+            Implemented with List ..insert() = O(n)
+                                    sorting() = O(n log n)
+            Implemented using a Binary Heap
+                                    insert = O(log n)                        
+                                    delete = O(log n)
+                Diagrammed as tree but internally a list
+                Variations
+                    Min Heap - smallest key at front
+                    Max Heap - largest key at front
+
+            Operations                                  Function
+            insert(k)                                   adds new item to the heap
+            find_min()                                  returns the item with the minimum key value, leaving item in the heap
+            del_min()                                   returns the item with the minimum key value, removing the item from the heap
+            is_empty()                                  returns true if the heap is empty, false otherwise
+            size()                                      returns number of items in the heap
+            build_heap(list)                            builds a new heap from the list of keys
+
+            Uses a complete binary tree filled in from left to right
+            Complete binary trees can be represented using a list...
+                Left child of parent = 2p
+                Right Child of a parent = 2p + 1
+            Heap Order property
+                For every node x with parent p the key in p is smaller than or equal to the key in x
+            Constructor
+                class BinHeap:
+                    def __init__(self):
+                        self.heap_list = [0] .. as first element but not used for anything more than simple integer division
+                        self.current_size = 0
+            Insert
+                Add item to end of list then compare to parent if it is less than the parent then replace the parent called percolating...parent of current node can be found by dividing current node by floor(2) or in Python i // 2 > 0 ... the zero is for the division
+            Delete Minimum
+                Take the top item off then restore the full compliance by taking the last item in the list and moving it to the root, push new root node down the tree to its proper position, swap the root with its smallest child until it is less than both children called percolating down
+            Build_Heap Method
+                To insert one by one it would take O(n log n) operations to complete the heap becauase some items would be inserted in the middle of the list which takes O(n) time
+                Can be done in O(n) time if we start with an entire list
+                Uses perc_down to move the largest child down the tree
+                Any nodes past the halfway point will be leaves and have no children because it is a complete binary tree
+                Key to understanding how it is O(n):
+                    log n factor is derived from the height of the tree, for most of the work in build heap the tree is shorter than log n
+Binary Tree Applications
+    Parse Trees
+        Build from a fully parenthesized mathematical expression
+            Rules
+                1. if the current token is a left paraethesis '(' add a new node as the left child of current and descend to the left child
+                2. if the current token is a binary operator set root of current node to operator, add a new node as the right child and descend right
+                3. If token is a number, set root to number and return to the parent
+                4. if current token is a right paranthesis ')' go to parent of current node
+                To do this we need to track the parent node. To do that we can use a Stack() 
+                    If we are moving to the child just push the current node onto the stack and move to the child. Then when we need the parent just pop it off
+                Value Error if we get a token we don't recognize
+        To evaluate the expression stored in the tree (like a word expression)
+        To recover the original mathematical expression from the tree
+    Tree Order Traversals
+        - preorder - visit root node first then recursively do a preorder traversal of the left tree then the right tree
+            - two ways to implement...as external function check if tree exists then get its left and right child
+                - as internal check if left child exists to traversal of left, then check if right and do traversal of right
+            - better to do it as a external function because you rarely want to just traverse the tree
+        - inorder - recursively do an inorder traversal on the left tree, visit the root node then do a recursive inorder traversal of the right tree
+            - great at getting the parse tree back without parenthesis
+        - postorder - recursively do an postorder traversal of the left subtree and the right subtree followed by a visit to the root
+            - great for the evaluation of the parse tree
+    Binary Search Trees
+        Operations                          Function
+            put(key, val)                   add a new key value pair to the map, if key is already in the map.. replace old with new 
+            get(key)                        given a key return the value stored or None
+            del                             Delete key-value pair from the map using a statement of the form del map[key]
+            del map[key]                 
+            in                              True for a statement key in map, if key is in the map
+
+        Search Tree Implementation
+            

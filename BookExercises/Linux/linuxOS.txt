@@ -1,0 +1,607 @@
+Operating Systems Lectures
+
+What is an OS?
+    Software program that sits between the applications and computational hardware
+Why OS's important?
+    Most applications interact with the OS
+Goals of an OS
+    Universal
+        Provide convenient software interface to hardware resources
+        Maximuize utilization of hardware
+        Solve Contention
+        Provide Services
+    Common
+        Provide security
+            protect against buggy applications/crashes
+            control access to your data by others
+        Support software development
+        Provide standardized software libraries
+            Including a standardized user interface
+Definitions
+Program, stored algorithm or plan of execution
+Process, A program that has been loaded into memory and is executing
+Thread, a line of execution in a process
+Standard OS Services
+    Process and thread management
+        start a program (become a process and thread)
+        Ending a process/thread
+        Debugging programs/processes
+    File and input/output management
+        Organizing bits into meaningful structures: Files
+        Providing interfaces for reading and writing to files
+        communicating with external devices
+        organizing files into directories
+    Interprocess Communication (IPC)
+        Signals, pipes, network sockets (TCP/IP)
+    Process Coordination
+        Contention Management == shared access
+Interacting the OS
+    Users
+        via GUI
+        via CLI
+    Programs
+        via functions
+            system calls
+            API (application programming interface) functions
+        via Network Communication
+            Message-based
+            Connection based
+
+UNIX
+Jan 1st 1970, time zero for UNIX
+BASH, bourne again shell (/usr/local/bin/bash)
+TCSH, enhanced C-shell (/usr/local/bin/tcsh)
+Korn, Shell (/bin/ksh)
+chsh, changes the shell
+user commands, commands that can only be run from the shell and shell scripts
+system calls, request for service that causes the normal CPU execution to be interrupetd and control to be given to the OS ex: read and write
+What is the shell?
+    Unix based user interface
+    Text based
+    Provides access to all UNIX user level files
+        Start programs
+        manage running programs (pipes)
+        manage I/O to and from programs (redirection)
+        Kill programs
+Pipes, pass the standard output into the next commands standard input
+#!/bin/bash will invoke the shell specified in the file
+IF THEN ELIF LOOP
+    if command
+    then
+        command
+    elif
+        command
+    then
+        command
+    else
+        command
+    fi
+WHILE LOOP
+    while command1
+    do
+        command2
+    done
+FOR LOOP
+    for i in a b c d
+    do
+         command
+    done
+Quoting
+    Single quotes protect all metacharacters
+    Double quotes protect spaces
+        Variables are expanded
+    Backslash
+        protects signle metacharacter like / or $
+Trap command, used to catch signals and clean up
+
+Unix File Structure
+
+files, hard links to inodes
+inodes, contain all meta-info.. a reference count..pointers to actual file data and identified by inode number 
+
+Modern OS Concepts
+The underlying hardware
+    OS provides applications access to the hardware in an abstracted manner
+    Processor
+        Series of registers
+            Stores a number
+        Program counter
+            contains memory address of next instruction of thread
+        Stack pointer
+            contains memory address of the current thread's stack
+        Execution Circuitry
+        High Speed Cache
+            Connects to RAM (memory) and all other devices
+    Memory
+        Array of bytes where each has an address
+        Temporary storage, slower than the process and cache but faster than a disk
+    Persistent Storage
+        Magnetic Disk
+        Non-volatile memory (flash etc)
+        Optical (CD, DVD, BD)
+        Slow, but persists without power
+    Virtual Memory
+        Creates illusion of 
+            Exclusive Memory (not shared)
+            Unlimited Memory (up to maximum address size)
+Concurrency
+    Multiple processes executing at the same time
+    Greatly increases the efficiency of an OS
+        While one process is waiting for I/O another process can use the CPU
+Multiprogramming
+    More than one process can be ready to execute
+    System calls trigger "context switches" which let the next process run
+    Process will not execute again until its system call returns
+Timesharing
+    CPU time split between multiple processes
+    Gives illusion that many processes are running at once
+Complications
+    Concurrently running processes can share data and/or resources
+Race Conditions
+    flaw in a system or process where the output exhibits unexpected critical dependence on the relative timing of events
+If 2+ processes access a resource concurrently you must provide access control with:
+Locks
+    Only process owning lock may access resource
+    many ways to do locking
+    locking usually requires support from the OS
+
+UNIX PARADIGM
+EVERYTHING IS A FILE
+    even directories and hardware devices...processes are not files though
+A file is a stream of bytes according to the system programmer
+    An array
+    Newlines/carriage returns and tabs are all bytes
+    Its persistent and stored on a magnetic disk
+
+PROCESSES
+Process management is a necessary component of an OS
+Process ---
+    Instance of executing a program
+    Collection of execution resources associated with an executing program
+Program vs Process
+    Program 
+        executable code
+    Process
+        Running instance of a program
+        more than one processes can be concurrently executing the same program code
+            will have seperate execution resources
+                virtual address spaces, process id
+            On modern OS
+                some resources will be shared if two process are executing the same program code
+    UNIX PROCESS
+        Consists of:
+            Unique identity PID
+            Virtual address space
+            Program code and data(variables) in memory
+            User, group identity and umask value
+            Execution enviroment
+                Enviroment varible, pwd
+                List of open files
+                Description of actions to take on receiving signals
+            Resource limits, scheduling priority
+Process States
+    Running - On CPU
+    Waiting - blocked and waitng for IO, timer alarm or signal
+    Zombie - Exited and waiting for cleanup
+    Runnable - waiting for CPU
+Fork
+    Child Process gets____from parent:
+        Process credentials
+        Enviroment
+        stack
+        memory
+        open fd
+        close on exec flags
+        signal handling settings
+        nice value
+        scheduler class
+        process group ID
+        session ID
+        current working directory
+        file mode creation mask (umask)
+        root directory
+        resource limits
+        controlling terminal
+    Child process has unique:
+        PID
+        different parent process ID
+        own copy of fd and directory streams
+        process,text, data and other memory locks not inheritied
+        process time, in the tms struct
+        resource utilizations are set to 0
+        pending signals initialized to the empty set
+        timers created by timer_create not inherited
+        asynchronous input or output operations not inherited
+    Child process exits for two reasons
+        Completes execution and exits normally
+            exit status 0 
+            encounter error condition, recognized it and exit with a non-successful exit status
+        Killed by a signal
+    Parent Checks child exit status for the process to end
+Exec
+    Run different program
+    Short for execute
+    replaces the currently running program
+    Destroys currently running program
+    Does not create a new process, just replace the one its called from
+Process Attributes
+    Process ID
+        Fixed by the kernel
+    Process Group ID or Session ID
+    Enviroment
+        set of text variables used to pass info between shell and a C program
+    Current Directory
+        files specified are searched for in the current directory
+    Real and effective user ids
+        How UNIX implements security
+        Affects
+            access to files and directories
+            signals (you can only kill processes you own)
+            access to priviledged system calls (nice, chroot)
+            resource limits, quotas
+    Real and effective group ids
+    Process Scheduling priority
+
+KILLING ZOMBIES
+    Can only run one process at a time
+    WAITING processes are not consuming resources
+    RUNNABLE processes 
+        number of processes waiting for the CPU only
+    Bounding - 
+        Memory Bound - process you're running is limited by available RAM
+        CPU bound - process you're running is limited by processor speed
+    If a process terminates but its parent doesn't wait, it becomes a ZOMBIE
+        Zombies stay in the system until they are waited for
+    If parent terminates without cleaning up zombies the zombies become ORPHANS
+        Orphans are adobted by INIT 
+    kfork, kill command
+Ampersand means to start in the background
+
+
+REGEX
+    used by many UNIX program (grep, sed, vi, emacs, regexp)
+    Libraries for REGEX
+        grep (basic)
+        /usr/xpg4/bin/grep -E
+        Perl
+    grep example
+        grep "FINDME" fileToSearch
+    grep
+        filter
+        search Globally for lines matching the Regular Expression and Print them
+        means Search
+    Basic REs --- Operators
+        * -- match 0 or more of the previous character
+        ^ -- circumflex at the beginning of the RE indicates RE must start at the beginning
+        $ -- placed at end of RE, matches the end of the string
+        Pattern     Matches
+        jon         matches any string that contains Jon
+        ^abc        matches any string that starts with abc
+        abc$        matches any string that ends with abc
+        ^Will George$   matches any string that exactly says Will George
+        .           matches any single character
+        \.          quotes a special character like . here
+        [abc]       matches any one character inside the brackets
+        [^abc]      matches any one character except those in brackets
+    Ranges
+        [a-z]       matches any character from a to z
+        [^a-z]      anything but the characters from a-z
+    Decisions
+        \|          OR operator with \ escape     
+        \(word\) \{number\}     Look for patterns that are repeated at least Number times
+        \( \)       paranteheses will capture matched string for later use
+        \number     allows you to specify string should match the nth pattern that you have captured
+
+Pipes and Redirection (Interprocess Communication (IPC)
+    Sharing open files
+        Files stay open when you exec to prevent use:
+            Close-on-exec
+                Tells kernel to close open files on exec because open files are inhertied by child processes (fd is shared) which can cause security issues
+                Set for every fd you do not want to share
+                Inherited through fork
+        I/O redirection
+            Pipes: redirectr input and output b/w different processes
+            Possible becuase open files are shared across fork() and exec()
+            kernel opens stdin, stdout and stderr for every process created
+            You can change where the standard IO streams are coming or going after fork() but before exec() using dup2(fd1, fd2)
+        Real IPC
+            Intermediate/Temporary Files
+            Pipes - b/w two processes forked by common ancestor
+            FIFOs (named pipes) - two processes on same machine
+            SysV message IPC - communication between processes on same machine
+                not a simple byte stream
+                supports messages categories for priorities
+            Sockets- two processes separated by a network
+        Between process IPC
+            dup2()
+            On Same machine?
+                temp/intermediate files
+                    -writes to disk slow
+                    -no good way to track when other processes readt to recieve or send data
+                pipes
+                    connect an output only fd in one process to an input only fd in another
+        Pipe Creation
+            1. fd share across fork() and exec()
+            2. parent creates pipe which creates two new fd one in and one out
+            3. parent forks and execs (parent and child have fds)
+            4. Child reads from input fd and parent process writes to output fd
+        flow control with read()
+            - receives data and return immediately the number of bytes read
+            - if no data it will lcok waiting for data and process is suspended
+            - system call
+        flow control with write()
+            - will not return until all data has been written
+            - pipe have a size (only so much data can fit)
+            - will block until space becomes available as other process reads data from pipe
+        fpathconf()
+            -determines the size of a pipe
+        Closing pipes
+            - if process A closes pipe B's read() will return 0
+            - if B closes input pipe write will return -1 and errno in A will be set to EPIPE
+            - A will be sent SIGPIPE signal
+
+
+Signals
+    Kernel intiates contact with a user process using SIGNALS
+    Uses:   
+        Process has done something wrong
+            SIGBUS = bus error (invalid memory address)
+            SIGSEGV = segmentation fault
+            SIGFPE = floating point error
+            SIGILL = trying to execute an illegal machine instruction
+            SIGSYS = executing an illegal system call
+        timer has expired
+            If you want to wait you can do so with wait() ..consumes resources
+            Or tell kernel you want to be notified when time passes
+            SIGALARM - alarm(), ualarm(), sleep()
+            SIGCHILD, when called parent process can call wait() or waitpid()
+        child has completed executing
+            SIGCHILD
+        event associated with the terminal has occurred ex:ctrl-c
+        Process on the other end of communication has gone away
+        Suspend and resume execution of process
+        Terminate process
+            SIGTERM 15
+            SIGKILL 9
+        2 user-defined signals
+            SIGUSR1
+            SIGUSR2
+    3 Ways to handle a signal
+        1. Ignore it
+        2. Take default action
+        3. Specify a function that should be called when a type of signal arrives
+    sigaction Structure
+        First attribute
+            SIF_DFL - take default action
+            SIG_IGN - ignore the signal
+            A pointer to a function that is called when signal is received
+    Blocking signals
+        Means signal is delayed until it is unblocked
+        done with sigprocmask()
+    Waiting for a signal
+        pause() - suspends process or thread permanently 
+    Signals and system calls
+        Signals can occur in the middle of a system call
+        System calls return an error EINTR
+    Sending signals to yourself
+        alarm() or raise()
+        - can only have one alarm active at a time
+
+Named Pipes/FIFOs
+    - A persistent pipe
+    - Any process can open a FIFO
+    - exist as special files in the file system
+    - created re: mififo() system call or with the mknod or mkfifo shell commands
+    - Why?
+        - want to build a client-server on a single machine but don't want to deal with sockets
+        - want to access one end of the FIFO with a non-network aware program
+
+Network Communication IPC
+Terminology
+    Client/Server architecture, networking arrangement such that one process is waiting for new connections from others
+    Client, process that initiates
+    Server, process thats always running, waiting for new connection initiations from client processes
+    daemon, process running in the background always have init process as their parent
+
+TCP/IP
+    - transmission protocol
+    - provided by the OS to user processes
+    - Only passes bytes between processes (does not interpret bytes (application layer))
+    - Handshaking
+        1. Closed Client
+        2. Client: Create TCB send SYN
+        3. Server passively open, create TCB
+        4. Server wait for client
+        5. Server recieve SYN and send SYN-ACK
+        6. Client recieve SYN-ACK and send ACK
+        7. Server recieve ACK
+        8. Connection established
+Text protocol debugging tool
+    - telnet helps debug text-based protocols
+    - you can pass telnet a second parameter that specifies the port number
+Non-Text based application protocols
+    -TCP/IP can transfer binary data
+    -Advantages of text-based
+        - easy to debug
+        - easy to communicate an understand (and teach)
+    -Disadvantages of text-based
+        - not compact or efficient
+        - server can spend a lot of time just parsing text
+IP does not guarantee
+    -Data integrity
+    -Packet Order
+    -Prevention of duplicates
+    -Packet will actually arrive
+TCP can:
+    -re-order packets
+    -request packet re-transmission
+    -drop duplicates
+    -connection oriented
+    -won't lose packets
+Network PIs (programming interfaces)
+    -X/OPen Transport Interface
+    -Berkley Sockets
+        --end point of a communication link between processes
+        --treats network connections like files
+        --developed for BSD UNIX under a grant for DARPA
+    File Descriptor table after call to socket command
+    - Client must know the IP addess and port of the server beforehand
+        -IP address only ID's the machine not the process
+        - each process is on a unique port..complete address is IP and port
+Client Sockets
+    Process:
+        1.Create socket endpoint - socket()
+        2. connect the socket to the server - connect
+        3. use read() and write() or send() and recv() to transfer data
+Send
+    Will block until all the data has been sent or the connection goes away
+    Fails happen due to:
+        - Client disconnect (STOP button in browser)
+        - Network Partitions
+        - Network failure
+Receive 
+    Data may arrive in odd size bundles
+    recv() or read() will return exact amount of data that has arrived
+    More data may be coming as long as return value is greater than 0
+    recv() and read() will block if the connection is open but no data is available
+Server Sockets
+    - server socket listens on a given port
+    - many clients may be connecting to that port
+    - would like a separate fd for each client connection
+    1. Client requests connection
+    2. Server creates new file descriptor for client which is used for bi-directional communication
+    3. Other clients request connection can now be serviced
+Non_concurrent Procedure
+    1. Create network endpoint with socket()
+    2. Bind socket to a port - bind()
+        Ports allow multiple network processes on a machine with a single address
+        Server has to choose a port where clients can contact it
+        bind() associates the chosen port with a socket already created with the socket() command
+    3. Start listening for connections - listen()
+        Server will ignore any connection attempts until you invoke listen() command
+    4. Loop and accept connections - accept()
+        Servers run continually, waiting for clients to contact them
+        Has an infinite loop that continually processes connetions from clients
+        The accept() function takes the next connection off of the listen queue or blocks the proces until a connection arrives
+
+CONCURRENT PROCEDURES
+    - want to maximize 
+        - throughput (connections serviced/second)
+        - hardware utilization (%CPU usage)
+    - tradeoffs
+        -response time vs throughput vs hardware utilization vs complexity
+    -Can be provided in two ways---
+        - Apparent concurrency
+            - A single thread of execution, using the select() command and non-blocking I/O
+            - When I/O would block switch connection 
+            - Up to a certain number of connections
+                - Maximize CPU utilization
+                - Increase throughput
+            - Less programming issues but code is more complicated and only works if request are short
+        - Real Concurrency with Threads
+            - Mulitple threads of execution
+                - could be multiple processes, each with one thread
+            - OS preempts thread/process after each quantum
+            - Response time not dependent on length of previous clients request
+            - Harder to design, implement, and maintain
+            - up to a certain number of connections
+                - Maximize CPU utilization
+                - maximize response time
+                - Increase throughput
+            - if too many concurrent connections
+                - everything gets worse -> server eventually hangs
+                - need to put limits on concurrent connections
+            - Four methods
+                - create process per client connection
+                    -fork a new process to handle each connection
+                    -Advantages;
+                        - minimal shared state to manage
+                    -Disadvantages
+                        - process creation (fork) is slow
+                        - context-switching between procs is also slow (minor compared to fork)
+                - a pool of available processes
+                    -Maintain a pool of iterative processes to handle connections
+                    -Advantages
+                        - no longer have to fork
+                        - have rapid response as long as there is an idle process available
+                        - Can set the pool size, that you don't overload the hardware
+                    -Disadvantages
+                        - still have process context switching
+                - one process, create one thread per connection
+                    - Thread allows mutiple concurrent execution contexts within a single process
+                    - Can implement a web server as a single process with multiple threads
+                        - either one per connection or a pool of threads
+                    -select()
+                        - designed for server-like applications that have many communicatin channels open at once
+                            -Data may become available at any time on any channel
+                            - want to minimize delay between wehn data/space becomes available and your process calls read() or write()
+                            - You give select a list of fd and it returns when any one becomes read or writable
+                            - if multiple pipes are open you don't want to be waiting on events for all of them you don't want to spend all of your time looping through each so you use SELECT()
+                        - if a fd becomes readable a bit is set in readfds
+                        - if an fd becomes writable a bit is set in the writefds
+                        - if an erroror exceptional event occurs then bit is set in errorfds
+                    -Advantages
+                        -Can sometimes avoid context-swtiches
+                        -Can share data easily
+                    -Disadvantages
+                        - Code must be thread-safe (AKA re-entrant)
+                        - Must always worry about inadvertent data sharing
+
+                - one process, a pool of available threads
+    5. Read and write data to client - send(), recv(), read(), write()
+
+UNIX Security
+    Dual-Mode operation
+        -OS must ensure that an incorrect program cannot cause other programs to execute wrong
+        -Provide hardware support to differentiate between two operation modes
+            1. User mode - execution by user
+            2. Monitor mode - (supervisor or system mode) execution done by OS
+        -if interrupt or fault - hardware goes to monitor mode
+        
+        - I/O Protection
+            - all I/O instructions are privileged (can only be issued in monitor mode)
+            - user program can never gain control of the computer in monitor mode
+        - Memory Protection
+            - need tow registers that deterine range of legal addresses a program may access (base and limit register)
+            - memory outside of range is protected
+        - CPU protection
+            Timer - interrupts computer after specified period to ensure operating system maintains control
+            Used to implement time sharing
+            Load-timer is a privileged instruction
+    
+    General System Architecture
+        - How to perform privileged instructions?
+            - System Calls -- method used by a process to request action by the OS
+                - usually takes the form of a trap to a specific location in the interrupt vector
+                - control passes through the interrupt vector to a sevice routine in the OS, mode bit is set to monitor mode
+                - monitor verifies the parameters are correct and legal, executes and returns control to the instruction
+    effective id
+    real id 
+    SUID, user security bit where executible runs with effective user ID of the owner of the file
+    SGID, executable runs with effective user ID of the group owner of the file
+    -both have bits that enable them to run as different users rather than being a different user like "su" allows
+
+    Strongest Security
+        - Physical Isolation
+            - even with disable local shell access bootable devices can access the HD of the computer
+            - hard drive can be stolen
+
+Montioring and Logs
+    - Network
+    - Account Login/logout
+    - Program usage
+    - Others
+            
+Awk scripting language
+- features associative arrays
+    -- maps arbitrary objects to arbitrary objects
+    - aka map, hash, lookup table
+Daemons
+    - typically launched at boot time to:
+        - respond to network requests
+        - monitor activities
+        - manage account billkeeping
+        - rotate/maintain/record logs
+
+gdb - debugger program
+best degugging technique - trace statements

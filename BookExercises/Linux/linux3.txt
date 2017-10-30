@@ -1,0 +1,545 @@
+NETWORKING NOMAD LINUX PART 3
+
+
+NETWORK SHARING
+File Sharing Overview
+    --When working within a network, the way to transfer data is network file sharing
+    --file sharing tool
+        --scp command
+            -secure copy, works like cp but allows you to transfer between hosts on the same network. Works via ssh
+            --examples:
+            -copy a file from local host to remote host:
+            scp myfile.txt username@remotehost.com:/remote/directory
+            -copy a file from a remote host to your local host
+            scp username@remotehost.com:/remote/directory/myfile.txt /local/directory
+            -copy directory from local host to remote host
+            scp -r mydir username@remotehost.com:/remote/directory
+rsync
+    --Another tool to copy data from different hosts
+    --short for remote synchronization
+    --different from scp in that it uses a special algorithm to see data you're copying to and will only copy differences
+    --verifies file with checksums
+    --ideal for directory synch remotely and locally, data backups and large data transfers
+    FLAGS
+        -- v -verbose
+        -- r -recursive
+        -- h -human readable output
+        -- z - compressed for easier transfer, great for slow connections
+    -copy/sync files on same host
+    rsync -zvr /my/local/directory/one /my/local/directory/two
+    -copy/sync files to local host from a remote host
+    rsync /local/directory username@remotehost.com:/remote/directory
+    -copy/sync files to a remote host from a local host
+    rsync username@remotehost.com:/remote/directory /local/directory
+Simple HTTP Server
+    --Python quick network share that other machines on the network can access
+    -- sets up a basic webserver that you can access via the localhost address
+    -- grab the IP address of the machine you ran it on and then on another machine access it it in the browser with: http:://IP_ADDRESS:8000.
+    --You can view files by typing http://localhost:8000 in the web browser
+    --You can also do this with node
+NFS
+    Standard network file share for linux
+    NFS
+        -allows a server to share directories and files with one or more clients over a network
+        -setting up NFS client
+            sudo service nfsclient start
+            sudo mount server:/directory/mount_directory
+        -Automounting
+            -setup automounting to keep the server permanently mounted
+            -automount tool or amd
+            - when a file is accessed in the specified directory automount will look up the remote server and automatically mount it
+Samba
+    -SMB
+        -Secure Message Block Protocol originally for Windows to Linux but was optimized to form the Common Internet File System (CIFS) protocol
+    -Samba
+        --The linux utilities to work with CIFS on Linux
+        --To Install:
+            --Install
+            sudo apt update
+            sudo apt install samba
+            --Setup smb.conf
+            sudo vim /etc/samba.smb.conf
+            --Setup password
+            sudo smbpasswd -a [username]
+            --Create a shared directory
+            mkdir /my/directory/to/share
+            --Restart the Samba Service
+            sudo service smbd restart
+            --Access via windows
+            smbclient //HOST/directory -U user
+            --instead of transferring one by one you can just mount the network share on your system
+            sudo mount -t cifs servername:directory mountpount -o user=username,pass=password
+
+
+NETWORK BASICS
+Network Basics
+    -Components
+        -ISP- internet service provider
+        -Router - allows each machine on your network to connect to the internet. Can connect via ethernet or wireless
+        -WAN - Wide Area Network, network that encompasses everything b/w router and a wider netowrk
+        -WLAN - network between router and any wireless devices you may have like laptops
+        -LAN - local area network, network between router and any wired devices such as desktop PCs
+        -Hosts - each machine on a network is known as a host
+    - Data and info passed through network are known as packets
+OSI Model -
+    - Open Systems Interconnection - theoretical model of networking
+    - Shows how a packet traverses through a network in 7 layers (Different than TCP/IP model)
+TCP/IP Model -
+    -What the internet is based off of--implementation of networking
+    -set of protocols called the TCP/IP suite that specify how data should be gathered, transmitted and routed through a network
+    --Layers
+        --Application Layer
+            - Top level, determines how the computer programs interface with the transport layer services to view data that is sent or recieved
+            - Uses:
+                - HTTP - web pages and internet
+                - SMTP - Simple Mail Transfer Protocol (email)
+            -- MORE IN DEPTH
+                - Packets used to transport consisting of header and payload
+                    - header = where is it going and where did it come from
+                    -payload = data being transferred
+                - Talks to the transport layer through a port to the transport layer to be encapuslated into segments
+        -- Transport Layer 
+            - Second level -- determines how data will be transmitted
+            - checks ports and data integrity
+            - Uses:
+                TCP - (Transmission Control Protocol) - reliable data delivery
+                UDP - (User Datagram Protocol) - unreliable data delivery
+            -- MORE IN DEPTH
+                - Sends data in packets called segments to transport across networks
+                - Ports
+                    -Sending via IP addresses is not specific enough for application level 
+                    -So we use ports
+                    -Transport layer will attach source and destination ports to the segments
+                    -When reciever gets final packet it will know what port to use
+                -UDP
+                    - Unreliable
+                    - works for media/gaming
+                -TCP
+                    - reliable
+                    - uses ports to send to and from host
+                    -application opens a connection on host port to port on remote host
+                    -TCP Handshake
+                        1. Client sends SYN segment to the server to request connection
+                        2. Server sends SYN-ACK to acknowledge request
+                        3. Client sends ACK to acknowledge connection reques
+                        4. Data can be exchanged
+                    - Data sent in sefments tracked with TCP sequence numbers so they are arranged in order
+        -- Network Layer - 
+            - Third level - moves packets between hosts and across networks
+            - Uses:
+                - IP (Internet Protocol)
+                - ICMP (Internet  Control Message Protocol) - Helps tell us what is going on, such as error messages and debugging info
+            - MORE IN DEPTH:
+                - Routing of packets from the source host to a destination host
+                - IP addreses define the rules to different subnets
+                1. Recieves segment coming from Transport layer, 
+                2. encapsulates it in an IP Packet
+                3. Attaches IP address of source host and destination host in header
+                4. Sends to link (physical) layer
+        -- Link Layer
+            - Final layer - Specifies how to send data across a physical piece of hardware
+            -- MORE IN DEPTH
+                -Hardware layer
+                - Data encapsulated into a FRAME
+                - Frame header includes source and destination MAC Addresses, checksums and packet separators so the receiver can tell when a packet ends
+                1. Link layer attaches source MAC address to the frame header
+                2. Uses ARP to find destination MAC Address
+                    - ARP
+                        - Address Resolution Protocol
+                        - Finds MAC address assoicated with IP address
+                        - If not in same network routing system will determine next router and check again
+                        - ARP look up table used once in the same network
+                        - If value not there then broadcast message sent out using ARP protocol and the machine with the IP address will reply with the ARP packet containing the IP and MAC
+                        - Link layer then forwards frame through the NIC (Network Interface Card)
+                        - Then packet traversal down the TCP/IP layer
+Network Addressing
+    -MAC Addresses (media access control)
+        - hardware address
+        - never changes
+        - device needs a NIC (network interface card)
+        - each manufacturer has a unique identifier (OUI) which is denoted by first 3 bytes of address
+    -IP Addresses
+        - used to identify a device on a network
+        - hardware independent and can vary in syntax depending on IPv4 or IPv6
+        - used by software side
+        - it takes both hardware and software to move data so devices ahve a MAC and IP
+    -Hostnames
+        - take IP address and allow you to tie that address to a human readable name like myhost.com
+Packet Traversal Steps
+    1. Data from email sent to the transport layer
+    2. Transport layer encapsulates into TCP or UDP segment, which attaches the destination and source TCP and UDP port then sent to Network Layer
+    3. Network Layer encapsulates insaide an IP packet attaches the source and destination IP address then routes the packet to the Link Layer.
+    4. The packet reaches Pete's physical hardware and gets encapsulated into a frame, source and destination MAC address get added to the frame
+    5. Destination receives frame throught the physical layer checks for data integrity then de-encapsulates the contents and send the IP packet to the network layer
+    6. Network layer reads the packet to find the source and destination IP that was attached and makes sure it is the correct destination. De-encapsulate and send th transport layer
+    7. Transport layer de-encapsulates the segments, checks the TCP or UDP port numbers and makes a connection to the application layer based on port numbers
+    8. Application layer receives data and presents it as final email message.
+DHCP Overview
+    -Dynamic Host Configuration Protocol
+    - Application layer protocol at port 67, UDP Transport Layer
+    -DHCP assigns IP addresses, subnet masks and gateways to our machines
+    - Allows for network admin to not worry about assigning IP addresses and prevents duplicate IP addresses
+    - Every physical network should have its own DHCP server so a host can request an IP, in home router acts as a DHCP server
+    -- DHCP gets all dynamic host info by:
+        1. DHCP DISCOVER - message broadcasted to search for a DHCP server
+        2. DHCP OFFER - DHCP server in the network replies with an offer message. The offer contains a packet with the DHCP lease time, subnet mask, IP addresses, etc.
+        3. DHCP REQUEST - client sends out another broadcast to let all DHCP servers know which offer it accepted
+        4. DHCP ACK - acknowledgement is sent by the server
+
+
+SUBNETTING
+IPv4
+    - IPv4 Address:
+        -example: 204.23.124.23
+        -Two Parts:
+            -Network portion lets us know what network its
+            -Host portion tells us which host on that network
+        - Separated into octets by periods
+            - 4 octets/bytes
+            - 8 bits per or 1 byte per
+        -view by using the following command
+        ifconfig -a 
+Subnets
+    -Group of hosts with IP addresses that are similar in a certain way
+    -Divided into network prefix and a subnet mask
+    -Subnet Mask
+        -Determine what part of the IP address is the network portion and what part is the host
+        -Looks like:
+            255.255.255.0
+        -255 is our mask (255 is max number for a byte)
+        -Subnet can be denoted by the network prefix followed by the mask
+            --Example:
+                -123.234.0.0/255.255.0.0
+    -Why?
+        - segment networks and control flow of traffic into a network
+        - to communicate with hosts on different subnets you need a subnet connected to another subnet
+        -Router connects subnets and has an address of 1 on the subnet
+        - Router will have a port that connects to another subnet
+            -192.168.1.1 = Typical Router Address on Subnet
+        -Certain IP addresses on private networks are not visible and have a NAT in place
+Subnet Math
+    -IP address is masked by your subnet mask so when you see a 1 it is masked and you pretend it is not there.
+    -Subtract 2 from total for 
+        --broadcast address
+        --subnet address
+        --address can range from 192.168.1.1 to 192.168.1.254 if IP address is 192.168.1.165 and the mask is 255.255.255.0
+        11000000.10101000.00000001.10100101
+        11111111.11111111.11111111.00000000
+        00000000.00000000.00000000.10100101 = 000.000.000.165
+Subnetting Cheats
+    Memorize base-2 calculations
+    1 = 2
+    2 = 4
+    3 = 8
+    4 = 16
+    5 = 32
+    6 = 64
+    7 = 128
+    8 = 256
+    9 = 512
+    10 = 1024
+    11 = 2048
+    12 = 4096
+    128/64/32/16/8/4/2/1
+    192 = 192 - 128 = 64 - 64 = 0 = 11000000
+CIDR
+    -Classless inter-domain routing 
+        --used to represent a subnet mask in a more compact way
+    -CIDR Notation of 10.42.3.0/255.255.255.0 = 10.42.3.0/24
+    -IP address is 4 bytes or 32 bits, CIDR indicates the amount of bits used as the network prefix
+    - So 123.12.24.0/23 means the first 23 bits are used
+        - How many hosts then?
+            - 2 ^ 9 or 512 -2 = 510
+NAT
+    -Network Address Translation
+    -Makes a device like a router act as an intermediary b/w the internet and private network
+    -One IP address represents group of computers (like a receptionist in an office router is the gatekeeper)
+    -How does it work?
+        1. Machine sends request through router
+        2. Router takes request and opens its own connection to the site requested then sends hosts request
+        3. Router is the only thing the desination site can see
+IPv6
+    -- allows us to connect more hosts to the internet
+    -- not a replacement, its a complement
+    -- Example:
+        2dde:1235:1256:3:200:f8ed:fe23:59cf
+
+
+ROUTING
+What is a router?
+    --enables machines in a network to communicate with each other and other networks
+    --has LAN ports and internet uplink port sometimes labeled WAN
+    -How does a router work?
+        -- They use addresses that are set on a routing table that our system uses to navigate
+    -Hops
+        -packets move in hops
+            --measure of distance a packet must travel to get from the source to the destination
+    -Switching
+        -- receiving, processing and forwarding data to the destination
+    - Routing 
+        --is a process of creating the routing table so that we can do switching better
+    - Flooding
+        -- used before routing, if router didnt know which way to send a pcaket than every incoming packet is sent through every outgoing link except the one it arrived on.
+Routing Table
+    --Command to see routing table
+        sudo route -n
+    -- Destination
+        -- first field in table
+    -- GAteway
+        -- If sending packet out of network it will be sent here (the gateway to another network)
+    -- Genmask
+        -- Subnet mask, used to figure out which IP addresses match what destination
+    -- FLAGS
+        - UG - network is Up and is a Gateway
+        - U - Network is Up
+    -- Iface
+        -- interface that our packet will be going out of, eth0 means first ethernet device on system
+Path of a packet
+    INSIDE THE LOCAL NETWORK
+   1. Local machine compares destination IP address to see if its in the same subnet by looking at subnet mask
+   2. Packets need to have a source MAC address, destination MAC address, source and destination IP addresses...we don't yet have the destination MAC address
+   3. To get destination host use ARP to broadcast request on the lcoal network
+   4. Packet sent
+    OUTSIDE THE LOCAL NETWORK
+    1. Local machine compares the destination IP address, can't get MAC because it is not in local area network
+    2. Looks at routing table, so sends to default gateway..sends ARP out to get MAC of default gateway
+    3. Router looks at packet, confirms destination MAC, every move it strips old source and destination MAC and updates to next hop
+    4. Once it gets to the correct network it uses ARP
+    5. Packet doesn't change the source or destination IP
+Routing Protocols
+    --used to help system adapt to network changes
+    --two types
+        - distance vector protocols
+            - determine the path of other networks by using hop count
+            - next route will be the one with the least hops
+            - good for small networks
+            - when they start to scale it takes longer becuase it sends the routing table out to every router
+            - chooses routes that are closer but not necessarily the most efficient
+            -- RIP 
+                - Routing information protocol
+                - broadcasts routing table to every router in the network every 30 seconds
+                - can be very expensive for larger networks
+                - limits hop count to 15 
+        - link state protocols
+            - For large scale networks
+            - Plus
+                - ability to converge quickly
+            - only sends updates to neighboring routes
+            - calculates shorter path first and constructs their network topology as a graph
+            -- OPSF
+                - open shortest path first
+                - only updates routing tables if there is a network change (no hop limit)
+    -- convergance
+        -- routers communicate with other routers to collect and exchange info about network
+        -- Every routing table then maps the complete network topology after they agree
+        -- When something changes convergance will break until all routers are aware
+Border Gateway Protocol
+    -- BGP
+        - how the internet runs
+        - routes between autonomous systems rather than inside them
+        - packet reaches point at border of private network then passes to a BGP router whcih tells it how to traverse to other networks
+
+
+NETWORK CONFIGURATION
+Network Interfaces
+    -- how the kernel links up the software side of network to the hardware side
+    Command
+        ifconfig -a
+    ifconfig command
+        -- allows us to configure our network interfaces
+        -- runs on bootup and configures using config files
+        - eth0 = first etherent card
+        - wlan0 = wireless interface
+        - lo = loopback interface (represents your computer)
+        -- interfaces can have a status that is up or down
+        FIELDS
+            - HWaddr (MAC address of the interface)
+            - inet address (IPv4) 
+            - inet6 address (IPv6)
+        -Can also view interface info at
+            /etc/network/interfaces
+    -To bring up or down an interface
+        ifup [interface]
+        ifdown [interface]
+    -The ip command
+        - allows us to manipualte the networking stack of a system, may be preferred method of manipulating your network settings
+        -- Examples:
+            ip link show -- show interface info for all interfaces
+            ip -s link show [interface name] -- show statistics of an interface
+            ip address show -- show ip addresss allocated to interfaces
+            ip link set [interface] up -- bring interface up
+            ip link set [interface] down -- bring interface down
+            ip address add [ip address] dev [interface] - add an ip address to an interface
+Route
+    Add a new route
+        sudo route add -net [192.168.2.1/23] gw [10.11.12.3]
+        ip route add [ipaddress] via [10.11.12.3]
+    Delete a route
+        sudo route del -net [ipaddress]
+        ip route delete [ipaddress] via [10.11.12.3]
+        ip route delete [ipaddress]
+DHClient
+    DHCP starts on boot and gets a list of network interfaces from the dhclient.conf file
+    It tries to configure the interface using the DHCP protocol
+    --the dhclient.leases file keeps track of leases across system reboots
+    --To get a fresh IP
+        sudo dhclient
+Network Manager
+    -daemon that configures networks automatically
+    -Manages network's hardware and connection info
+    -Command Line Tools:
+        nm-tool
+            --reports Network manager's state and it's devices
+        nmcli
+            --allows you to control and modify NetworkManager
+arp
+    -Command that allows you to see locally stored ARP cache on our system
+    - empty when a machine boots and gets populated as packets are sent to other hosts
+    - if package is sent somewhere not in arp:
+        1. source host creates an ethernet frae with an ARP request packet
+        2. source host broadcast this frame to the entire network
+        3. if one of the hosts on the network knows the correct MAC address it will send a repply packet and frame with the MAC
+        4. Source host adds the IP to MAC address mapping to the ARP cache and then proceeds sending the packet
+    -- can also view the cache via the ip command
+    ip neighbour show
+
+
+TROUBLESHOOTING
+ICMP
+    - Internet Control Message Protocol is part of the TCP/IP protocol suite
+    - used to send updates and error messages
+    - useful for debugging network issues such as a failed packet delivery
+    - Each message contains a:
+        --type = type of ICMP message
+            Type 0 = echo reply
+            Type 3 = destination unreachable
+            Type 8 = echo request
+            Type 11 = Time exceeded
+        --code = sub-type and describes more information about the message
+            Type 3 code examples:
+                Code 0 = network unreachable
+                Code 1 = host unreachable
+ping
+    -used to test whether or not a packet can reach a host
+    -sends ICMP echo request to destination host and waits for ICMP echo reply
+    -Command:
+        ping -c 3 [destination]
+        - sends a -c (count) of echo request packets
+    -icmp_seq : shows the sequence number of the packets sent
+        -- if you do a ping and some sequence numbers are missing it means there is a connectivity issue
+        -- if sequence number is out of order, the connection is very slow and packets are exceeding the 1 second default
+    -ttl 
+        --time to live is a hop counter...if it gets to zero the packet dies so there are not floating packets everywhere
+    -time
+        -- roundtrip time it took from sending to getting reply
+traceroute
+    -used to see how packets are getting routed
+    - by using packets with increasing TTL values starting with 1
+    - builds a list of routers that the packets traverse until it gets an ICMP echo reply message
+    - each line in output is a router or machine b/w me and target
+    - sends three packets by default and outputs the RTT of a packet to each router
+netstat
+    Well Known Ports
+        ftp     21/tcp
+        ssh     22/tcp
+        smtp    25/tcp
+        domain  53/tcp #DNS
+        http    80/tcp
+        https   443/tcp
+    netstat
+        -displays network related info like connections, routing tables etc
+        -socket is an interface that allows programs to send or receive data
+        --socket address is the combination of the IP address and port
+        --every connection b/w host and destination requires a unique socket
+    - a port used to identify which application should send or recieve data
+    
+        COMMAND
+            netstat -at = shows listening and non-listening sockets for network connections
+                        = -t flag shows only tcp connections
+            Output:
+                Columns L --> R
+                Proto: Protocol used (TCP or UDP)
+                Recv-Q: data that is queued to be recieved
+                Send-Q: data that is queued to be sent
+                Local Address: Locally connected host
+                Foreign Address: Remotely connected host
+                State: The state of the socket
+                    STATES:
+                        LISTENING : listening for incoming connections
+                        SYN_SENT : Socket is actively trying to establish a connection
+                        ESTABISHED : Socket has an established connection
+                        CLOSE_WAIT : remote host has shutdown and we're waiting for the socket to close
+                        TIME_WAIT : socket is waiting after close to handle packets still in netowrk
+Packet Analysis
+    Two popular packet analyzers: Wireshark and tcpdump
+    -scan network interfaces, capture packet activity parse packages and output info for us to see
+    - allow us to get to the nitty gritty of network analysis
+    -output
+        -first field is timestamp
+        -protocol info (IP)
+        - source and destination address
+        -seq, (the TCP packet's starting and ending sequence number)
+        - length in bytes
+
+
+DNS
+What is DNS?
+    - Domain Name System
+    - Fundamentally a distributed database of hostnames to IP addresses
+DNS Components
+    - relies on sites and organizations providing part of the database
+    - Name Servers
+        - answers questions regarding things like "who is"
+        - can be authorative (meaning they have the info) or recursive (meaning they'd ask others until they found an authorative)
+    - Zone file
+        - inside a name server
+        - how the name server stores information about the domain or how to get to the domain 
+    -Resource Records
+        - Each line in a zone file consists of the following:
+            - Record Name
+            - TTL - the time after which we discard teh record and obtain a new one, internet is constantly changing so IP addresses can be changing
+            - Class - namespace of the record information - IN is used for internet
+            - Type - Type of info stored in the record data
+                Examples: A for Address, MX for Mail Exchanger
+            - Data - This field can contain an IP address if it's an A or something else depending on type
+            EXAMPLE OUTPUT:
+                patty   IN  A   192.168.0.4
+DNS Process
+    Local DNS Server
+        - first host asks where the site is
+        - starts from top of the funnel and asks the Root Servers
+    Root Servers
+        - 13 Root Servers for the internet which are mirrored and distributed around the world
+        - Contain info about Top-Level Domains like .com, .org, .net etc.
+        - If the root server doesn't have it it tells us to ask the top-level domain
+    Top-Level Domains
+        - Send a request to the name server that knows .com addresses
+        - if it doesn't know in the zone file it will have the record for the name server that does
+        - it gives us the IP for that name server
+    Authoritative DNS Server
+        - Now send a final request to the DNS server that actually has the record
+        - It checks the zone file and finds the resource record for www
+        - it gives us the IP address so we can contact this host
+/etc/hosts
+    /etc/hosts
+    - Contains mappings of some hostnames to IP addresses
+    - can manage access to hosts by modifying /etc/hosts.deny and /etc/hosts.allow
+    - Hosts first look here for IP address mappings
+    /etc/resolv.conf
+    - Traditionally used to map DNS servers for more effecient lookups 
+    - improvements made to DNS make this irrelevant
+DNS Setup
+    - BIND 
+        - Most popular DNS server on the Internet. Standard used with Linux
+        - Berkely Internet Name Domain
+    - DNSmasq
+        - lightweight and much easier to configure than BIND. Comes with all tools to setup DHCP and DNS, recommended for a smaller network
+    - PowerDNS
+        - Similar to BIND
+        - Reads info from multiple databases like MySQL, PostgreSQL
+DNS Tools
+    nslookup [hostname] COMMAND
+        - name server lookup tool used to query name servers to find info about resource records
+    dig [hostname]
+        - domain information groper, powerful tool for getting info about DNS name servers
+        - more flexible than nslookup and great for troubleshooting DNS issues

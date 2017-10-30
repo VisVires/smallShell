@@ -1,0 +1,41 @@
+# depslib dependency file v1.0
+1438580377 source:c:\users\william\documents\github\cpp\accelcpp\ch_7\grade.cpp
+	<stdexcept>
+	<vector>
+	"grade.h"
+	"median.h"
+	"Student_info.h"
+
+1438580674 c:\users\william\documents\github\cpp\accelcpp\ch_7\grade.h
+	<vector>
+	"Student_info.h"
+
+1438579104 c:\users\william\documents\github\cpp\accelcpp\ch_7\student_info.h
+	<iostream>
+	<vector>
+	<string>
+
+1438580678 c:\users\william\documents\github\cpp\accelcpp\ch_7\median.h
+	<algorithm>
+	<stdexcept>
+	<vector>
+
+1439614568 source:c:\users\william\documents\github\cpp\accelcpp\ch_7\gradeprogram5.cpp
+	<algorithm>
+	<iomanip>
+	<ios>
+	<iostream>
+	<stdexcept>
+	<string>
+	<vector>
+	<iterator>
+	<map>
+	"grade.h"
+	"Student_info.h"
+
+1438580648 source:c:\users\william\documents\github\cpp\accelcpp\ch_7\median.cpp
+	"median.h"
+
+1438579115 source:c:\users\william\documents\github\cpp\accelcpp\ch_7\student_info.cpp
+	"Student_info.h"
+

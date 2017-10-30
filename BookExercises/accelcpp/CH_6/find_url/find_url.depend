@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1439420343 source:c:\users\william\documents\github\cpp\accelcpp\ch_6\split_6.cpp
+	"split_6.h"
+
+1439416361 c:\users\william\documents\github\cpp\accelcpp\ch_6\split_6.h
+	<iostream>
+	<vector>
+	<string>
+	<iterator>
+	<cctype>
+	<algorithm>
+
+1439420343 source:c:\users\william\documents\github\cpp\accelcpp\ch_6\find_url.cpp
+	<iostream>
+	<vector>
+	<string>
+	<iterator>
+	"split_6.h"
+
